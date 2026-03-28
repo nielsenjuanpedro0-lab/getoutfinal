@@ -29,11 +29,11 @@ export default function HeroSection() {
       <div className="relative z-10 text-center px-4 max-w-4xl mx-auto flex flex-col items-center my-auto py-12">
         
         {/* Mysterious Icon */}
-        <div className="reveal mb-6 animate-pulse">
-          <Skull className="w-12 h-12 text-primary/80 drop-shadow-[0_0_15px_rgba(230,126,34,0.5)]" />
+        <div className="reveal mb-4 md:mb-6 animate-pulse">
+          <Skull className="w-10 h-10 md:w-12 md:h-12 text-primary/80 drop-shadow-[0_0_15px_rgba(230,126,34,0.5)]" />
         </div>
 
-        <h1 className="reveal reveal-delay-1 font-display text-7xl sm:text-8xl md:text-9xl leading-[0.85] text-white mb-6 drop-shadow-2xl font-bold tracking-tight">
+        <h1 className="reveal reveal-delay-1 font-display text-6xl sm:text-7xl md:text-8xl lg:text-9xl leading-[0.85] text-white mb-4 md:mb-6 drop-shadow-2xl font-bold tracking-tight">
           ¿PODÉS 
           <span className="block text-primary mt-2" style={{ textShadow: "0 0 40px rgba(230,126,34,0.6)" }}>ESCAPAR?</span>
         </h1>

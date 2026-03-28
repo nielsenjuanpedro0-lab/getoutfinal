@@ -2,7 +2,7 @@ import { CalendarDays, Clock, Users, Zap, Search } from "lucide-react";
 
 export default function ExclusiveSection() {
   return (
-    <section className="relative py-32 md:py-48 bg-zinc-950 overflow-hidden">
+    <section className="relative py-20 md:py-32 lg:py-48 bg-zinc-950 overflow-hidden">
       {/* Top and Bottom Visual Separators (Gradients and Borders) */}
       <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-accent/50 to-transparent shadow-[0_0_20px_rgba(230,126,34,0.5)]" />
       <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-background to-transparent" />
@@ -23,14 +23,14 @@ export default function ExclusiveSection() {
               <CalendarDays className="w-4 h-4" /> De Lunes a Viernes
             </div>
             
-            <h2 className="font-display text-6xl md:text-8xl text-white leading-[0.9]">
+            <h2 className="font-display text-5xl sm:text-6xl md:text-8xl text-white leading-[0.9]">
               Turnos
               <span className="block text-accent mt-2 drop-shadow-xl" style={{ textShadow: "0 0 40px rgba(230,126,34,0.5)" }}>
                 Exclusivos
               </span>
             </h2>
             
-            <p className="mt-8 text-xl text-muted-foreground leading-relaxed max-w-md mx-auto lg:mx-0 font-light">
+            <p className="mt-6 md:mt-8 text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-md mx-auto lg:mx-0 font-light">
               Durante la semana tenemos turnos exclusivos para tu grupo.
               Consultá disponibilidad y armá tu experiencia <span className="text-white font-medium">completamente a medida</span>.
             </p>
@@ -78,7 +78,7 @@ export default function ExclusiveSection() {
                 rel="noopener noreferrer"
                 className="w-full relative overflow-hidden group/btn flex items-center justify-center gap-3 bg-accent text-accent-foreground font-bold text-lg px-8 py-5 rounded-xl transition-all duration-300 transform active:scale-[0.98] shadow-[0_0_30px_rgba(230,126,34,0.4)] hover:shadow-[0_0_50px_rgba(230,126,34,0.6)]"
               >
-                <span className="relative z-10 flex items-center gap-2">
+                <span className="relative z-10 flex items-center justify-center gap-2">
                   <Search className="w-5 h-5" /> 
                   CONSULTAR DISPONIBILIDAD
                 </span>

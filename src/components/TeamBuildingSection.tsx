@@ -2,7 +2,7 @@ import { Users, Target, Handshake, ChevronRight, Briefcase } from "lucide-react"
 
 export default function TeamBuildingSection() {
   return (
-    <section className="relative py-32 md:py-48 bg-[#14100c] overflow-hidden">
+    <section className="relative py-20 md:py-32 lg:py-48 bg-[#14100c] overflow-hidden">
       
       {/* Elegant Ambient Glows */}
       <div className="absolute inset-0 pointer-events-none">
@@ -12,7 +12,7 @@ export default function TeamBuildingSection() {
 
       {/* Massive Decor Text */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center pointer-events-none opacity-[0.02] select-none flex flex-col justify-center overflow-hidden">
-        <span className="font-display text-[15rem] md:text-[25rem] leading-none whitespace-nowrap font-black text-white">CORPORATE</span>
+        <span className="font-display text-[7rem] sm:text-[10rem] md:text-[16rem] lg:text-[25rem] leading-none whitespace-nowrap font-black text-white">CORPORATE</span>
       </div>
 
       <div className="container relative z-10">
@@ -20,18 +20,18 @@ export default function TeamBuildingSection() {
           
           {/* Left Side: Typography & CTA */}
           <div className="lg:col-span-5 reveal flex flex-col items-center lg:items-start text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-orange-500/20 bg-orange-500/10 text-orange-400 font-medium text-sm tracking-widest uppercase mb-8 shadow-[0_0_20px_rgba(249,115,22,0.15)]">
+            <div className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full border border-orange-500/20 bg-orange-500/10 text-orange-400 font-medium text-xs sm:text-sm tracking-widest uppercase mb-6 sm:mb-8 shadow-[0_0_20px_rgba(249,115,22,0.15)]">
               <Briefcase className="w-4 h-4" /> Para empresas y equipos
             </div>
             
-            <h2 className="font-display text-6xl md:text-7xl lg:text-8xl text-white leading-[0.9] tracking-tight mb-8">
+            <h2 className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-white leading-[0.9] tracking-tight mb-6 md:mb-8">
               TEAM <br/>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-600 drop-shadow-lg">
                 BUILDING
               </span>
             </h2>
             
-            <p className="text-xl text-zinc-400 leading-relaxed font-light max-w-lg mb-12">
+            <p className="text-base sm:text-lg md:text-xl text-zinc-400 leading-relaxed font-light max-w-lg mx-auto lg:mx-0 mb-10 md:mb-12">
               Fortalecé los lazos de tu equipo de trabajo con una experiencia <b className="text-white font-medium">desafiante, divertida y colaborativa</b> que jamás olvidarán.
             </p>
 
@@ -54,35 +54,35 @@ export default function TeamBuildingSection() {
             <div className="grid gap-6 sm:grid-cols-2 relative lg:-right-8">
               
               {/* Card 1 */}
-              <div className="reveal reveal-delay-1 sm:mt-12 group p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl transition-all duration-500 hover:bg-white/10 hover:border-orange-500/50 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(249,115,22,0.2)]">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500/20 to-orange-500/5 border border-orange-500/20 flex items-center justify-center mb-6 text-orange-400 group-hover:scale-110 group-hover:text-orange-300 transition-all duration-500 shadow-inner">
-                  <Target className="w-7 h-7" />
+              <div className="reveal reveal-delay-1 sm:mt-12 group p-6 sm:p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl transition-all duration-500 hover:bg-white/10 hover:border-orange-500/50 hover:-translate-y-2 text-center sm:text-left shadow-lg">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 mx-auto sm:mx-0 rounded-2xl bg-gradient-to-br from-orange-500/20 to-orange-500/5 border border-orange-500/20 flex items-center justify-center mb-4 sm:mb-6 text-orange-400 group-hover:scale-110 group-hover:text-orange-300 transition-all duration-500 shadow-inner">
+                  <Target className="w-6 h-6 sm:w-7 sm:h-7" />
                 </div>
-                <h3 className="font-display text-3xl text-white mb-3">Desafío en Equipo</h3>
+                <h3 className="font-display text-2xl sm:text-3xl text-white mb-2 sm:mb-3">Desafío en Equipo</h3>
                 <p className="text-zinc-400 leading-relaxed text-sm md:text-base font-light">
                   Pongan a prueba la comunicación y el liderazgo bajo presión real para lograr escapar a tiempo.
                 </p>
               </div>
 
               {/* Card 2 */}
-              <div className="reveal reveal-delay-2 group p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl transition-all duration-500 hover:bg-white/10 hover:border-amber-500/50 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(245,158,11,0.2)]">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-500/5 border border-amber-500/20 flex items-center justify-center mb-6 text-amber-400 group-hover:scale-110 group-hover:text-amber-300 transition-all duration-500 shadow-inner">
-                  <Handshake className="w-7 h-7" />
+              <div className="reveal reveal-delay-2 group p-6 sm:p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl transition-all duration-500 hover:bg-white/10 hover:border-amber-500/50 hover:-translate-y-2 text-center sm:text-left shadow-lg">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 mx-auto sm:mx-0 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-500/5 border border-amber-500/20 flex items-center justify-center mb-4 sm:mb-6 text-amber-400 group-hover:scale-110 group-hover:text-amber-300 transition-all duration-500 shadow-inner">
+                  <Handshake className="w-6 h-6 sm:w-7 sm:h-7" />
                 </div>
-                <h3 className="font-display text-3xl text-white mb-3">Lazos más Fuertes</h3>
+                <h3 className="font-display text-2xl sm:text-3xl text-white mb-2 sm:mb-3">Lazos más Fuertes</h3>
                 <p className="text-zinc-400 leading-relaxed text-sm md:text-base font-light">
                   Una experiencia compartida tan intensa que genera conexiones reales y duraderas entre los participantes.
                 </p>
               </div>
 
               {/* Card 3 - Spans 2 columns on small screens, or positioned uniquely */}
-              <div className="reveal reveal-delay-3 sm:col-span-2 lg:w-[80%] lg:mx-auto group p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl transition-all duration-500 hover:bg-white/10 hover:border-yellow-500/50 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(234,179,8,0.2)]">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-yellow-500/20 to-yellow-500/5 border border-yellow-500/20 flex items-center justify-center text-yellow-400 group-hover:scale-110 group-hover:text-yellow-300 transition-all duration-500 shadow-inner flex-shrink-0">
-                    <Users className="w-7 h-7" />
+              <div className="reveal reveal-delay-3 sm:col-span-2 lg:w-[80%] lg:mx-auto group p-6 sm:p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl transition-all duration-500 hover:bg-white/10 hover:border-yellow-500/50 hover:-translate-y-2 text-center sm:text-left shadow-lg">
+                <div className="flex flex-col sm:flex-row items-center sm:items-center gap-4 sm:gap-6">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 mx-auto sm:mx-0 rounded-2xl bg-gradient-to-br from-yellow-500/20 to-yellow-500/5 border border-yellow-500/20 flex items-center justify-center text-yellow-400 group-hover:scale-110 group-hover:text-yellow-300 transition-all duration-500 shadow-inner flex-shrink-0">
+                    <Users className="w-6 h-6 sm:w-7 sm:h-7" />
                   </div>
                   <div>
-                    <h3 className="font-display text-3xl text-white mb-2">Grupos Grandes</h3>
+                    <h3 className="font-display text-2xl sm:text-3xl text-white mb-2">Grupos Grandes</h3>
                     <p className="text-zinc-400 leading-relaxed text-sm md:text-base font-light">
                       Adaptamos la experiencia logística para atender a corporaciones y equipos de gran tamaño de manera impecable.
                     </p>
