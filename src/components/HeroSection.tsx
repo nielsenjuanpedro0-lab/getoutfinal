@@ -84,45 +84,47 @@ export default function HeroSection() {
       
       <div className="relative z-10 text-center px-4 max-w-5xl mx-auto flex flex-col items-center my-auto py-12">
         {/* Logo */}
-        <div className="reveal mb-6 md:mb-8 transition-all duration-700 transform hover:scale-110">
+        <div className="reveal mb-10 md:mb-12 transition-all duration-700 transform hover:scale-105">
           <img
             src={logo}
             alt="GetOut!"
-            className="w-20 h-20 md:w-28 md:h-28 object-contain drop-shadow-[0_0_30px_rgba(230,126,34,0.6)]"
+            className="w-16 h-16 md:w-20 md:h-20 object-contain drop-shadow-[0_0_20px_rgba(230,126,34,0.4)]"
           />
         </div>
 
         {/* Dynamic Slide Content */}
-        <div className="min-h-[220px] md:min-h-[280px] flex flex-col items-center justify-center">
-          <p 
-            key={`subtitle-${current}`}
-            className="reveal font-body text-primary text-sm md:text-lg lg:text-xl font-bold tracking-[0.2em] uppercase mb-4 animate-fade-in-down"
-            style={{ textShadow: "0 0 20px rgba(230,126,34,0.4)" }}
+        <div className="min-h-[200px] md:min-h-[250px] flex flex-col items-center justify-center">
+          <div 
+            key={`badge-${current}`}
+            className="reveal inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 backdrop-blur-md mb-6 animate-fade-in-down"
           >
-            {slides[current].subtitle}
-          </p>
+            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+            <p className="font-body text-primary text-xs md:text-sm font-black tracking-widest uppercase">
+              {slides[current].subtitle}
+            </p>
+          </div>
           
           <h1 
             key={`title-${current}`}
-            className="reveal font-display text-5xl sm:text-7xl md:text-8xl lg:text-9xl leading-[0.9] text-white mb-8 drop-shadow-2xl font-bold tracking-tight animate-fade-in-up"
+            className="reveal font-display text-5xl sm:text-7xl md:text-8xl leading-[1] text-white mb-10 drop-shadow-2xl font-bold tracking-tight animate-fade-in-up"
           >
             {slides[current].title.split(" ").map((word, i) => (
-              <span key={i} className="block last:text-primary" style={i === slides[current].title.split(" ").length - 1 ? { textShadow: "0 0 40px rgba(230,126,34,0.5)" } : {}}>
+              <span key={i} className="block last:text-primary decoration-primary/30" style={i === slides[current].title.split(" ").length - 1 ? { textShadow: "0 0 30px rgba(230,126,34,0.4)" } : {}}>
                 {word}
               </span>
             ))}
           </h1>
         </div>
         
-        <div className="reveal flex flex-col sm:flex-row justify-center items-center gap-4 w-full sm:w-auto mt-4">
+        <div className="reveal flex flex-col sm:flex-row justify-center items-center gap-6 w-full sm:w-auto mt-8">
           <a
             href="#salas"
-            className="group relative overflow-hidden w-full sm:w-auto bg-primary text-primary-foreground font-bold px-10 py-5 rounded-xl text-xl transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_30px_rgba(230,126,34,0.5)] active:scale-95"
+            className="group relative overflow-hidden w-full sm:w-auto bg-primary text-primary-foreground font-bold px-12 py-5 rounded-xl text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_30px_rgba(230,126,34,0.4)] active:scale-95"
           >
-            <span className="relative z-10 flex items-center justify-center gap-2 tracking-wide">
+            <span className="relative z-10 tracking-widest">
               RESERVAR AHORA
             </span>
-            <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+            <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
           </a>
         </div>
       </div>
