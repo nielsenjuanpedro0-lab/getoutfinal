@@ -13,7 +13,7 @@ import roomInculpados from "@/assets/room-inculpados.jpg";
 // Crealo en: mercadopago.com.ar → Cobrar → Crear link de cobro → $15.000
 const MP_PAYMENT_URL = "https://mpago.la/XXXXXXXXX";
 
-type Room = { id: string; name: string; players: string | null; accent_color: string | null; image_url: string | null };
+type Room = { id: string; name: string; players: string | null; accent_color: string | null; image_url: string | null; price?: number | null };
 type Step = "room" | "datetime" | "details" | "success";
 
 const getRoomImage = (room: any) => {
@@ -44,10 +44,10 @@ export default function ContactSection() {
   useEffect(() => {
     supabase
       .from("rooms")
-      .select("id, name, players, accent_color, image_url")
+      .select("*")
       .eq("is_active", true)
       .order("sort_order")
-      .then(({ data }) => { if (data) setRooms(data); });
+      .then(({ data }) => { if (data) setRooms(data as any); });
   }, []);
 
   // Load room-specific time slots
@@ -390,7 +390,7 @@ export default function ContactSection() {
                 <div className="rounded-xl border border-white/10 bg-white/5 p-5 space-y-2 mt-2">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-zinc-400">Valor de la reserva</span>
-                    <span className="text-white font-bold text-lg">$15.000</span>
+                    <span className="text-white font-bold text-lg">${room?.price?.toLocaleString() || "15.000"}</span>
                   </div>
                   <div className="flex items-center gap-2 text-xs text-zinc-400">
                     <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
