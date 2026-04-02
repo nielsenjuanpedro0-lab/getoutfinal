@@ -245,13 +245,63 @@ export default function RoomsSection() {
   const [current, setCurrent] = useState(0);
   const [selectedRoom, setSelectedRoom] = useState<any>(null);
 
-  const { data: rooms, isLoading } = useQuery({
+  const DEFAULT_ROOMS = [
+    {
+      id: "fallback-1",
+      name: "Ruinas de Copán",
+      description: "Una expedición arqueológica que se convierte en una carrera por la supervivencia. ¿Podrán escapar de la maldición?",
+      players: "2 a 6",
+      time: "60 min",
+      difficulty: "Alta",
+      difficulty_value: 8,
+      max_difficulty: 10,
+      accent_color: "#f0a500",
+      image_url: null,
+      is_active: true,
+      tagline: "Puesto N°3 en el Ranking Provincial",
+      price: 15000
+    },
+    {
+      id: "fallback-2",
+      name: "Inculpados",
+      description: "Has sido arrestado injustamente. Tienes una hora para encontrar las pruebas de tu inocencia antes de ser trasladado.",
+      players: "2 a 6",
+      time: "60 min",
+      difficulty: "Media",
+      difficulty_value: 6,
+      max_difficulty: 10,
+      accent_color: "#4A90D9",
+      image_url: null,
+      is_active: true,
+      tagline: "Puesto N°2 en el Ranking Provincial",
+      price: 15000
+    },
+    {
+      id: "fallback-3",
+      name: "El Refugio",
+      description: "El mundo ha colapsado. Tu única esperanza es entrar en el refugio búnker, pero el sistema de seguridad se ha bloqueado.",
+      players: "2 a 8",
+      time: "60 min",
+      difficulty: "Media",
+      difficulty_value: 5,
+      max_difficulty: 10,
+      accent_color: "#27AE60",
+      image_url: null,
+      is_active: true,
+      tagline: "Puesto N°4 en el Ranking Provincial",
+      price: 15000
+    }
+  ];
+
+  const { data: roomsData, isLoading } = useQuery({
     queryKey: ['public-rooms'],
     queryFn: async () => {
-      const { data } = await supabase.from('rooms').select('*').eq('is_active', true).order('sort_order', { ascending: true });
+      const { data } = await supabase.from('rooms').select('*').order('sort_order', { ascending: true });
       return data || [];
     }
   });
+
+  const rooms = roomsData && roomsData.length > 0 ? roomsData : DEFAULT_ROOMS;
 
   const prev = useCallback(() => {
     if (!rooms) return;
