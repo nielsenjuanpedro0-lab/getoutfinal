@@ -84,42 +84,42 @@ export default function HeroSection() {
       
       <div className="relative z-10 text-center px-4 max-w-5xl mx-auto flex flex-col items-center my-auto py-12">
         {/* Logo */}
-        <div className="reveal mb-10 md:mb-12 transition-all duration-700 transform hover:scale-105">
+        <div className="reveal mb-6 md:mb-8 transition-all duration-700 transform hover:scale-105">
           <img
             src={logo}
             alt="GetOut!"
-            className="w-16 h-16 md:w-20 md:h-20 object-contain drop-shadow-[0_0_20px_rgba(230,126,34,0.4)]"
+            className="w-14 h-14 md:w-18 md:h-18 object-contain drop-shadow-[0_0_20px_rgba(230,126,34,0.4)]"
           />
         </div>
 
         {/* Dynamic Slide Content */}
-        <div className="min-h-[200px] md:min-h-[250px] flex flex-col items-center justify-center">
+        <div className="min-h-[140px] md:min-h-[180px] flex flex-col items-center justify-center">
           <div 
             key={`badge-${current}`}
-            className="reveal inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 backdrop-blur-md mb-6 animate-fade-in-down"
+            className="reveal inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 backdrop-blur-md mb-4 animate-fade-in-down"
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-            <p className="font-body text-primary text-xs md:text-sm font-black tracking-widest uppercase">
+            <span className="w-1 h-1 rounded-full bg-primary animate-pulse" />
+            <p className="font-body text-primary text-[10px] md:text-xs font-black tracking-widest uppercase">
               {slides[current].subtitle}
             </p>
           </div>
           
           <h1 
             key={`title-${current}`}
-            className="reveal font-display text-5xl sm:text-7xl md:text-8xl leading-[1] text-white mb-10 drop-shadow-2xl font-bold tracking-tight animate-fade-in-up"
+            className="reveal font-display text-4xl sm:text-6xl md:text-7xl leading-[1.1] text-white mb-6 drop-shadow-2xl font-bold tracking-tight animate-fade-in-up max-w-3xl mx-auto"
           >
             {slides[current].title.split(" ").map((word, i) => (
-              <span key={i} className="block last:text-primary decoration-primary/30" style={i === slides[current].title.split(" ").length - 1 ? { textShadow: "0 0 30px rgba(230,126,34,0.4)" } : {}}>
+              <span key={i} className={`inline-block mx-1 ${i === slides[current].title.split(" ").length - 1 ? 'text-primary' : ''}`} style={i === slides[current].title.split(" ").length - 1 ? { textShadow: "0 0 30px rgba(230,126,34,0.4)" } : {}}>
                 {word}
               </span>
             ))}
           </h1>
         </div>
         
-        <div className="reveal flex flex-col sm:flex-row justify-center items-center gap-6 w-full sm:w-auto mt-8">
+        <div className="reveal flex flex-col sm:flex-row justify-center items-center gap-6 w-full sm:w-auto mt-4">
           <a
             href="#salas"
-            className="group relative overflow-hidden w-full sm:w-auto bg-primary text-primary-foreground font-bold px-12 py-5 rounded-xl text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_30px_rgba(230,126,34,0.4)] active:scale-95"
+            className="group relative overflow-hidden w-full sm:w-auto bg-primary text-primary-foreground font-bold px-10 py-4 rounded-xl text-base transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_30px_rgba(230,126,34,0.4)] active:scale-95"
           >
             <span className="relative z-10 tracking-widest">
               RESERVAR AHORA
