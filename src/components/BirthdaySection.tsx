@@ -1,4 +1,4 @@
-import { Cake, PartyPopper, Gift, Star } from "lucide-react";
+import { Cake, PartyPopper, Star, Sparkles } from "lucide-react";
 
 export default function BirthdaySection() {
   return (
@@ -13,7 +13,7 @@ export default function BirthdaySection() {
         {/* Floating icons */}
         <div className="hidden md:block">
           <PartyPopper className="absolute -top-4 left-[15%] w-8 h-8 text-primary/30 rotate-[-15deg]" />
-          <Gift className="absolute top-20 right-[10%] w-10 h-10 text-secondary/25 rotate-12" />
+          <Sparkles className="absolute top-20 right-[10%] w-10 h-10 text-secondary/25 rotate-12" />
           <Star className="absolute bottom-10 left-[8%] w-6 h-6 text-primary/20" />
         </div>
 
@@ -39,14 +39,14 @@ export default function BirthdaySection() {
             <p className="text-lg md:text-xl text-foreground/90 leading-relaxed text-center mb-8">
               Festejá tu cumple de una forma{" "}
               <span className="text-primary font-semibold">completamente diferente</span>.
-              Organizamos tu evento con todo incluido para que la pases increíble con tus amigos.
+              Un espacio ideal para vivir una actividad única con tus amigos que van a recordar toda la vida.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
               {[
                 { icon: "🎉", title: "Evento privado", desc: "La sala es toda tuya y de tu grupo" },
-                { icon: "🎂", title: "Todo incluido", desc: "Nos encargamos de cada detalle" },
-                { icon: "📸", title: "Recuerdos épicos", desc: "Fotos y videos de la experiencia" },
+                { icon: "🎂", title: "Un lugar original", desc: "Una actividad diferente para celebrar" },
+                { icon: "🔐", title: "Una actividad única", desc: "Una experiencia que van a recordar siempre" },
               ].map((item) => (
                 <div key={item.title} className="text-center space-y-2">
                   <span className="text-3xl">{item.icon}</span>
@@ -58,7 +58,7 @@ export default function BirthdaySection() {
 
             <div className="text-center">
               <a
-                href="https://wa.me/5492262000000?text=Hola!%20Quiero%20consultar%20por%20un%20cumpleaños"
+                href="https://wa.me/5492262000000?text=Hola!%20Quiero%20consultar%20por%20un%20cumplea%C3%B1os"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-3 bg-primary text-primary-foreground font-bold text-lg px-10 py-4 rounded-xl hover:brightness-110 active:scale-[0.97] transition-all duration-200 shadow-lg shadow-primary/25"

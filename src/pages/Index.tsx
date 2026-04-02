@@ -4,13 +4,13 @@ import HeroSection from "@/components/HeroSection";
 import RoomsSection from "@/components/RoomsSection";
 import BirthdaySection from "@/components/BirthdaySection";
 import HazardDivider from "@/components/HazardDivider";
-import TeamBuildingSection from "@/components/TeamBuildingSection";
 import ExclusiveSection from "@/components/ExclusiveSection";
 import SmokeDivider from "@/components/SmokeDivider";
+import TeamBuildingSection from "@/components/TeamBuildingSection";
 import HowItWorksSection from "@/components/HowItWorksSection";
-import StatsSection from "@/components/StatsSection";
-import TestimonialsSection from "@/components/TestimonialsSection";
 import ContactSection from "@/components/ContactSection";
+import TestimonialsSection from "@/components/TestimonialsSection";
+import ContactInfoSection from "@/components/ContactInfoSection";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 
@@ -21,16 +21,29 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <HeroSection />
+
+      {/* Salas + carrusel + precios */}
       <RoomsSection />
-      <BirthdaySection />
-      <HazardDivider />
-      <ExclusiveSection />
-      <SmokeDivider />
-      <TeamBuildingSection />
-      <HowItWorksSection />
-      <StatsSection />
-      <TestimonialsSection />
+
+      {/* Eventos especiales: cumpleaños, turnos exclusivos, team building */}
+      <section id="eventos-especiales">
+        <BirthdaySection />
+        <HazardDivider />
+        <ExclusiveSection />
+        <SmokeDivider />
+        <TeamBuildingSection />
+      </section>
+
+      {/* Reservar + cómo funciona */}
       <ContactSection />
+      <HowItWorksSection />
+
+      {/* Reseñas al fondo */}
+      <TestimonialsSection />
+
+      {/* Contacto: WhatsApp, Instagram, dirección, mapa */}
+      <ContactInfoSection />
+
       <Footer />
       <WhatsAppButton />
     </div>

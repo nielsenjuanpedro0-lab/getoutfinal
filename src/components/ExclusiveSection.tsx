@@ -1,9 +1,9 @@
-import { CalendarDays, Clock, Users, Zap, Search } from "lucide-react";
+import { CalendarDays, Clock, Users, Search } from "lucide-react";
 
 export default function ExclusiveSection() {
   return (
     <section className="relative py-20 md:py-32 lg:py-48 bg-zinc-950 overflow-hidden">
-      {/* Top and Bottom Visual Separators (Gradients and Borders) */}
+      {/* Top and Bottom Visual Separators */}
       <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-accent/50 to-transparent shadow-[0_0_20px_rgba(230,126,34,0.5)]" />
       <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-background to-transparent" />
       
@@ -31,8 +31,9 @@ export default function ExclusiveSection() {
             </h2>
             
             <p className="mt-6 md:mt-8 text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-md mx-auto lg:mx-0 font-light">
-              Durante la semana tenemos turnos exclusivos para tu grupo.
-              Consultá disponibilidad y armá tu experiencia <span className="text-white font-medium">completamente a medida</span>.
+              Durante la semana tenemos turnos exclusivos para tu grupo.{" "}
+              <span className="text-white font-medium">Para grupos a partir de 4 personas.</span>{" "}
+              Consultá disponibilidad y armá tu experiencia completamente a medida.
             </p>
           </div>
 
@@ -53,9 +54,9 @@ export default function ExclusiveSection() {
                 accent: "text-accent", border: "border-accent/20", bg: "bg-accent/5 hover:bg-accent/10"
               },
               { 
-                icon: Zap, 
-                title: "Precio especial", 
-                desc: "Tarifas exclusivas de lunes a viernes. Consultá por promociones vigentes.",
+                icon: Users, 
+                title: "Mínimo de jugadores", 
+                desc: "Los turnos exclusivos están disponibles a partir de 4 personas.",
                 accent: "text-secondary", border: "border-secondary/20", bg: "bg-secondary/5 hover:bg-secondary/10"
               },
             ].map((item, idx) => (
@@ -82,7 +83,6 @@ export default function ExclusiveSection() {
                   <Search className="w-5 h-5" /> 
                   CONSULTAR DISPONIBILIDAD
                 </span>
-                {/* Glare effect */}
                 <div className="absolute inset-0 -translate-x-full group-hover/btn:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
               </a>
             </div>

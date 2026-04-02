@@ -5,9 +5,8 @@ import logo from "@/assets/logo-getout.png";
 const links = [
   { label: "Inicio", href: "#inicio" },
   { label: "Salas", href: "#salas" },
-  { label: "¿Cómo funciona?", href: "#como-funciona" },
-  { label: "Reservar", href: "#reservar" },
-  { label: "Contacto", href: "#reservar" },
+  { label: "Eventos especiales", href: "#eventos-especiales" },
+  { label: "Contacto", href: "#contacto" },
 ];
 
 export default function Navbar() {

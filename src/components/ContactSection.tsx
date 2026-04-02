@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { MapPin, Instagram, MessageCircle, Loader2, CheckCircle, ChevronLeft, ChevronRight, Users, CalendarDays } from "lucide-react";
+import { MapPin, Loader2, CheckCircle, ChevronLeft, ChevronRight, CalendarDays, MessageCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { format, isBefore, startOfDay, getDay } from "date-fns";
@@ -8,6 +8,10 @@ import { Calendar } from "@/components/ui/calendar";
 import roomRefugio from "@/assets/room-refugio.jpg";
 import roomCopan from "@/assets/room-copan.jpg";
 import roomInculpados from "@/assets/room-inculpados.jpg";
+
+// ⚠️ Reemplazá esta URL por tu link de cobro de Mercado Pago:
+// Crealo en: mercadopago.com.ar → Cobrar → Crear link de cobro → $15.000
+const MP_PAYMENT_URL = "https://mpago.la/XXXXXXXXX";
 
 type Room = { id: string; name: string; players: string | null; accent_color: string | null; image_url: string | null };
 type Step = "room" | "datetime" | "details" | "success";
@@ -31,9 +35,7 @@ export default function ContactSection() {
   const [availableSlots, setAvailableSlots] = useState<string[]>([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    nombre: "", whatsapp: "", email: "", jugadores: "", notas: "",
-  });
+  const [formData, setFormData] = useState({ nombre: "", whatsapp: "", email: "" });
 
   const room = useMemo(() => rooms.find((r) => r.id === selectedRoom), [rooms, selectedRoom]);
   const roomColor = room?.accent_color || "hsl(var(--primary))";
@@ -48,7 +50,7 @@ export default function ContactSection() {
       .then(({ data }) => { if (data) setRooms(data); });
   }, []);
 
-  // Load room-specific time slots when room changes
+  // Load room-specific time slots
   useEffect(() => {
     if (!selectedRoom) { setRoomSlots([]); return; }
     supabase
@@ -60,7 +62,6 @@ export default function ContactSection() {
         if (data && data.length > 0) {
           setRoomSlots(data.map((d) => d.time_slot.slice(0, 5)));
         } else {
-          // Fallback por defecto si no hay turnos configurados en la DB para esta sala
           const roomName = rooms.find((r) => r.id === selectedRoom)?.name?.toLowerCase() || "";
           if (roomName.includes("copan")) {
             setRoomSlots(["16:15", "17:30", "18:45", "20:00"]);
@@ -75,49 +76,34 @@ export default function ContactSection() {
       });
   }, [selectedRoom, rooms]);
 
-  // Check availability when date changes
+  // Check availability
   useEffect(() => {
     if (!selectedRoom || !selectedDate || roomSlots.length === 0) {
       setAvailableSlots(roomSlots);
       return;
     }
-
     const fetchAvailability = async () => {
       setLoadingSlots(true);
       const dateStr = format(selectedDate, "yyyy-MM-dd");
-
       const [bookingsRes, blockedRes] = await Promise.all([
-        supabase
-          .from("bookings")
-          .select("booking_time")
-          .eq("room_id", selectedRoom)
-          .eq("booking_date", dateStr)
-          .neq("status", "cancelled"),
-        supabase
-          .from("blocked_slots")
-          .select("blocked_time")
-          .eq("room_id", selectedRoom)
-          .eq("blocked_date", dateStr),
+        supabase.from("bookings").select("booking_time").eq("room_id", selectedRoom).eq("booking_date", dateStr).neq("status", "cancelled"),
+        supabase.from("blocked_slots").select("blocked_time").eq("room_id", selectedRoom).eq("blocked_date", dateStr),
       ]);
-
       const taken = new Set<string>();
       bookingsRes.data?.forEach((b) => taken.add(b.booking_time.slice(0, 5)));
       blockedRes.data?.forEach((b) => taken.add(b.blocked_time.slice(0, 5)));
-
       setAvailableSlots(roomSlots.filter((t) => !taken.has(t)));
       setLoadingSlots(false);
-
       if (selectedTime && taken.has(selectedTime)) setSelectedTime("");
     };
-
     fetchAvailability();
   }, [selectedRoom, selectedDate, roomSlots]);
 
-  // Only allow Saturdays (6) and Sundays (0)
+  // Only allow weekends
   const disableDate = (date: Date) => {
     if (isBefore(date, startOfDay(new Date()))) return true;
     const day = getDay(date);
-    return day !== 0 && day !== 6; 
+    return day !== 0 && day !== 6;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -130,23 +116,22 @@ export default function ContactSection() {
       customer_phone: formData.whatsapp,
       customer_email: formData.email || null,
       room_id: selectedRoom,
-      num_players: parseInt(formData.jugadores) || 2,
+      num_players: 2, // default, removed from form
       booking_date: format(selectedDate, "yyyy-MM-dd"),
       booking_time: selectedTime,
-      notes: formData.notas || null,
+      notes: null,
       status: "pending",
       payment_status: "unpaid",
     });
 
     if (error) {
-      toast.error("Error al enviar la reserva. Intentá de nuevo.");
+      toast.error("Error al procesar la reserva. Intentá de nuevo.");
       setLoading(false);
       return;
     }
 
-    setStep("success");
-    toast.success("¡Reserva enviada!");
-    setLoading(false);
+    // Redirect to Mercado Pago payment link
+    window.location.href = MP_PAYMENT_URL;
   };
 
   const resetForm = () => {
@@ -154,13 +139,13 @@ export default function ContactSection() {
     setSelectedRoom(null);
     setSelectedDate(undefined);
     setSelectedTime("");
-    setFormData({ nombre: "", whatsapp: "", email: "", jugadores: "", notas: "" });
+    setFormData({ nombre: "", whatsapp: "", email: "" });
   };
 
   return (
     <section id="reservar" className="relative py-24 md:py-32 overflow-hidden">
       
-      {/* Dynamic Background Glow based on Selected Room */}
+      {/* Dynamic Background Glow */}
       <div 
         className="absolute inset-0 opacity-10 pointer-events-none transition-colors duration-1000 blur-[150px]"
         style={{ backgroundColor: selectedRoom ? roomColor : 'transparent' }}
@@ -170,9 +155,6 @@ export default function ContactSection() {
         <h2 className="reveal font-display text-6xl md:text-8xl text-center text-white mb-6 drop-shadow-2xl">
           Reservá tu <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">aventura</span>
         </h2>
-        <p className="text-center text-zinc-400 mb-16 max-w-lg mx-auto text-lg font-light">
-          Elegí tu sala, fecha y horario. Abrimos sábados, domingos y feriados.
-        </p>
 
         {/* Progress */}
         {step !== "success" && (
@@ -183,7 +165,7 @@ export default function ContactSection() {
               return (
                 <div key={s} className="flex items-center gap-3">
                   <div 
-                    className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-500 shadow-lg`}
+                    className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-500 shadow-lg"
                     style={{
                       backgroundColor: current === i ? roomColor : current > i ? `${roomColor}30` : '#27272a',
                       color: current === i ? '#fff' : current > i ? roomColor : '#71717a',
@@ -216,16 +198,11 @@ export default function ContactSection() {
                   
                   <div className="absolute bottom-0 inset-x-0 p-6 z-10">
                     <h4 
-                      className="font-display text-4xl text-white mb-2 transition-all duration-300 drop-shadow-md"
+                      className="font-display text-4xl text-white mb-1 transition-all duration-300 drop-shadow-md"
                       style={{textShadow: `0 0 30px ${r.accent_color || '#e67e22'}`}}
                     >
                       {r.name}
                     </h4>
-                    {r.players && (
-                      <p className="text-sm text-zinc-300 flex items-center gap-1.5 font-medium">
-                        <Users className="w-4 h-4" style={{color: r.accent_color || '#fff'}} /> {r.players}
-                      </p>
-                    )}
                   </div>
                   
                   {/* Hover Border Glow */}
@@ -235,6 +212,19 @@ export default function ContactSection() {
                   />
                 </button>
               ))}
+            </div>
+
+            {/* WhatsApp button for pre-questions */}
+            <div className="text-center mt-10">
+              <a
+                href="https://wa.me/5492262000000?text=Hola!%20Tengo%20algunas%20preguntas%20antes%20de%20reservar"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 border border-white/20 text-zinc-300 font-medium px-6 py-3 rounded-xl hover:border-white/50 hover:text-white transition-all duration-200"
+              >
+                <MessageCircle className="w-4 h-4 text-[#25D366]" />
+                ¿Tenés preguntas? Escribinos antes de reservar
+              </a>
             </div>
           </div>
         )}
@@ -269,7 +259,7 @@ export default function ContactSection() {
                       onSelect={(d) => { setSelectedDate(d); setSelectedTime(""); }}
                       disabled={disableDate}
                       locale={es}
-                      className="pointer-events-auto "
+                      className="pointer-events-auto"
                       style={{ '--theme-color': roomColor } as any}
                     />
                   </div>
@@ -285,7 +275,7 @@ export default function ContactSection() {
                     </div>
                   ) : loadingSlots ? (
                     <div className="flex flex-col items-center justify-center py-16 text-sm text-zinc-400 gap-4">
-                      <Loader2 className="w-8 h-8 animate-spin" style={{color: roomColor}} /> 
+                      <Loader2 className="w-8 h-8 animate-spin" style={{color: roomColor}} />
                       Buscando disponibilidad...
                     </div>
                   ) : availableSlots.length === 0 ? (
@@ -395,59 +385,39 @@ export default function ContactSection() {
                     />
                   </div>
                 </div>
-                <div>
-                  <label className="text-sm font-medium text-zinc-300 mb-1.5 block">Cantidad de jugadores *</label>
-                  <input
-                    type="number" min={2} max={10} required value={formData.jugadores}
-                    onChange={(e) => setFormData({ ...formData, jugadores: e.target.value })}
-                    className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-4 text-white text-sm placeholder:text-zinc-600 focus:outline-none focus:ring-1 transition-shadow"
-                    style={{ '--tw-ring-color': roomColor } as any}
-                    placeholder="2-10"
-                  />
+
+                {/* Reservation info */}
+                <div className="rounded-xl border border-white/10 bg-white/5 p-5 space-y-2 mt-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-zinc-400">Valor de la reserva</span>
+                    <span className="text-white font-bold text-lg">$15.000</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-zinc-400">
+                    <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
+                    Llegar 15 minutos antes del horario elegido
+                  </div>
                 </div>
-                <div>
-                  <label className="text-sm font-medium text-zinc-300 mb-1.5 block">Notas (opcional)</label>
-                  <textarea
-                    value={formData.notas}
-                    onChange={(e) => setFormData({ ...formData, notas: e.target.value })}
-                    rows={2}
-                    className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-4 text-white text-sm placeholder:text-zinc-600 focus:outline-none focus:ring-1 transition-shadow resize-none"
-                    style={{ '--tw-ring-color': roomColor } as any}
-                    placeholder="¿Alguna celebración especial o consulta?"
-                  />
-                </div>
+
                 <button
                   type="submit" disabled={loading}
-                  className="w-full mt-8 text-white font-bold py-5 rounded-xl text-lg hover:brightness-110 active:scale-[0.97] transition-all duration-300 disabled:opacity-60 flex items-center justify-center gap-2 shadow-lg"
+                  className="w-full mt-4 text-white font-bold py-5 rounded-xl text-lg hover:brightness-110 active:scale-[0.97] transition-all duration-300 disabled:opacity-60 flex items-center justify-center gap-2 shadow-lg"
                   style={{backgroundColor: roomColor, boxShadow: `0 0 25px ${roomColor}40`}}
                 >
-                  {loading ? (<><Loader2 className="w-5 h-5 animate-spin" /> PROCESANDO...</>) : "CONFIRMAR RESERVA"}
+                  {loading ? (<><Loader2 className="w-5 h-5 animate-spin" /> PROCESANDO...</>) : "CONFIRMAR Y PAGAR →"}
                 </button>
-                <p className="text-xs text-zinc-500 text-center mt-4">
-                  Te escribiremos por WhatsApp para confirmar la seña.
-                </p>
               </form>
             </div>
           </div>
         )}
 
-        {/* Success */}
+        {/* Success (fallback if redirect fails) */}
         {step === "success" && (
           <div className="reveal flex flex-col items-center justify-center text-center space-y-6 p-12 md:p-16 rounded-3xl border bg-black/50 backdrop-blur-xl max-w-2xl mx-auto"
                style={{borderColor: `${roomColor}30`, boxShadow: `0 0 100px ${roomColor}10`}}>
             <div className="w-24 h-24 rounded-full flex items-center justify-center border-4" style={{borderColor: roomColor, backgroundColor: `${roomColor}20`}}>
               <CheckCircle className="w-12 h-12" style={{color: roomColor}} />
             </div>
-            <h3 className="font-display text-5xl text-white drop-shadow-lg">¡RESERVA INICIADA!</h3>
-            <div className="bg-white/5 border border-white/10 rounded-xl p-6 w-full">
-              <p className="text-white font-medium text-lg mb-1">{room?.name}</p>
-              <p className="text-zinc-400">
-                {selectedDate && format(selectedDate, "EEEE d 'de' MMMM", { locale: es })} a las {selectedTime}hs
-              </p>
-            </div>
-            <p className="text-zinc-400 text-sm max-w-md">
-              Hemos registrado tus datos. En unos minutos nos comunicaremos al WhatsApp que dejaste para pasarte los datos del pago y <b>confirmar definitivamente</b> tu turno.
-            </p>
+            <h3 className="font-display text-5xl text-white drop-shadow-lg">¡RESERVA REGISTRADA!</h3>
             <button 
               onClick={resetForm} 
               className="mt-6 border font-bold px-8 py-4 rounded-xl transition-all duration-300 hover:brightness-110"
@@ -455,34 +425,6 @@ export default function ContactSection() {
             >
               NUEVA RESERVA
             </button>
-          </div>
-        )}
-
-        {/* Contact info below */}
-        {step === 'room' && (
-          <div className="reveal mt-20 grid sm:grid-cols-3 gap-8 text-center border-t border-white/5 pt-16">
-            <div className="flex flex-col items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <MapPin className="w-5 h-5 text-primary" />
-              </div>
-              <p className="text-sm text-zinc-400">Necochea, BA, Argentina</p>
-            </div>
-            <div className="flex flex-col items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center">
-                <Instagram className="w-5 h-5 text-accent" />
-              </div>
-              <a href="https://instagram.com/getout_salasdeescape" target="_blank" rel="noopener noreferrer" className="text-sm text-zinc-400 hover:text-white transition-colors">
-                @getout_salasdeescape
-              </a>
-            </div>
-            <div className="flex flex-col items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-[#25D366]/10 flex items-center justify-center">
-                <MessageCircle className="w-5 h-5 text-[#25D366]" />
-              </div>
-              <a href="https://wa.me/5492262000000" target="_blank" rel="noopener noreferrer" className="text-sm text-zinc-400 hover:text-white transition-colors">
-                WhatsApp Directo
-              </a>
-            </div>
           </div>
         )}
       </div>

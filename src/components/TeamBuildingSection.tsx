@@ -1,4 +1,4 @@
-import { Users, Target, Handshake, ChevronRight, Briefcase } from "lucide-react";
+import { Users, Target, Handshake, Briefcase, Layers } from "lucide-react";
 
 export default function TeamBuildingSection() {
   return (
@@ -32,7 +32,9 @@ export default function TeamBuildingSection() {
             </h2>
             
             <p className="text-base sm:text-lg md:text-xl text-zinc-400 leading-relaxed font-light max-w-lg mx-auto lg:mx-0 mb-10 md:mb-12">
-              Fortalecé los lazos de tu equipo de trabajo con una experiencia <b className="text-white font-medium">desafiante, divertida y colaborativa</b> que jamás olvidarán.
+              Fortalecé los lazos de tu equipo de trabajo con una experiencia{" "}
+              <b className="text-white font-medium">desafiante, divertida y colaborativa</b>{" "}
+              que jamás olvidarán.
             </p>
 
             <a
@@ -75,16 +77,16 @@ export default function TeamBuildingSection() {
                 </p>
               </div>
 
-              {/* Card 3 - Spans 2 columns on small screens, or positioned uniquely */}
+              {/* Card 3 */}
               <div className="reveal reveal-delay-3 sm:col-span-2 lg:w-[80%] lg:mx-auto group p-6 sm:p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl transition-all duration-500 hover:bg-white/10 hover:border-yellow-500/50 hover:-translate-y-2 text-center sm:text-left shadow-lg">
                 <div className="flex flex-col sm:flex-row items-center sm:items-center gap-4 sm:gap-6">
                   <div className="w-12 h-12 sm:w-14 sm:h-14 mx-auto sm:mx-0 rounded-2xl bg-gradient-to-br from-yellow-500/20 to-yellow-500/5 border border-yellow-500/20 flex items-center justify-center text-yellow-400 group-hover:scale-110 group-hover:text-yellow-300 transition-all duration-500 shadow-inner flex-shrink-0">
-                    <Users className="w-6 h-6 sm:w-7 sm:h-7" />
+                    <Layers className="w-6 h-6 sm:w-7 sm:h-7" />
                   </div>
                   <div>
-                    <h3 className="font-display text-2xl sm:text-3xl text-white mb-2">Grupos Grandes</h3>
+                    <h3 className="font-display text-2xl sm:text-3xl text-white mb-2">Experiencia personalizable</h3>
                     <p className="text-zinc-400 leading-relaxed text-sm md:text-base font-light">
-                      Adaptamos la experiencia logística para atender a corporaciones y equipos de gran tamaño de manera impecable.
+                      Adaptamos la experiencia según el tamaño de tu equipo.
                     </p>
                   </div>
                 </div>
