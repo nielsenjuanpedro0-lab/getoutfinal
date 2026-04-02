@@ -60,14 +60,33 @@ function RoomModal({ room, onClose }: { room: any; onClose: () => void }) {
           <div className="absolute inset-0 bg-gradient-to-t from-card via-card/10 to-transparent pointer-events-none" />
           
           {rank && (
-            <div className="absolute top-0 right-0 overflow-hidden w-40 h-40 pointer-events-none">
+            <div className="absolute top-0 right-0 w-48 h-48 pointer-events-none z-50 overflow-hidden">
+              {/* Back fold triangle left */}
+              <div 
+                className="absolute top-[52px] right-[100px] w-4 h-4 rotate-[15deg] brightness-50"
+                style={{ backgroundColor: '#E67E22' }}
+              />
+              {/* Back fold triangle right */}
+              <div 
+                className="absolute top-[100px] right-[16px] w-4 h-4 rotate-[75deg] brightness-50"
+                style={{ backgroundColor: '#E67E22' }}
+              />
+              
               <div
-                className="absolute top-8 right-[-40px] w-56 py-2.5 text-center text-[11px] font-black text-white rotate-45 shadow-2xl flex items-center justify-center gap-2.5 px-2"
-                style={{ backgroundColor: '#E67E22', boxShadow: `0 0 30px rgba(230,126,34,0.7)` }}
+                className="absolute top-10 right-[-45px] w-64 py-2 text-center rotate-45 shadow-2xl flex items-center justify-center gap-3 px-8 group/ribbon"
+                style={{ 
+                  backgroundColor: '#E67E22', 
+                  clipPath: 'polygon(10% 0, 90% 0, 100% 50%, 90% 100%, 10% 100%, 0 50%)',
+                  boxShadow: '0 10px 20px rgba(0,0,0,0.3)'
+                }}
               >
-                <img src={logoEscMap} alt="" className="w-5 h-5 rounded-sm object-cover border border-white/20" />
-                <Trophy size={14} className="stroke-[3]" />
-                <span className="tracking-widest">RANKING N°{rank}</span>
+                <div className="bg-white p-1 rounded-sm shadow-inner shrink-0 scale-110">
+                  <img src={logoEscMap} alt="" className="w-5 h-5 object-cover" />
+                </div>
+                <div className="flex flex-col items-start leading-none text-black font-black italic uppercase tracking-tighter">
+                  <span className="text-[14px]">Puesto N°{rank}</span>
+                  <span className="text-[10px] opacity-80">de la Provincia</span>
+                </div>
               </div>
             </div>
           )}
@@ -167,14 +186,32 @@ function RoomCard({ room, delay, onClick }: { room: any; delay: number; onClick:
 
         {/* Diagonal ranking ribbon — top right corner */}
         {rank && (
-          <div className="absolute top-0 right-0 overflow-hidden w-36 h-36 pointer-events-none z-10">
+          <div className="absolute top-0 right-0 w-40 h-40 pointer-events-none z-[20] overflow-hidden">
+            {/* 3D Fold Left */}
+            <div 
+              className="absolute top-[44px] right-[88px] w-3 h-3 rotate-[15deg] brightness-50"
+              style={{ backgroundColor: '#E67E22' }}
+            />
+            {/* 3D Fold Right */}
+            <div 
+              className="absolute top-[82px] right-[14px] w-3 h-3 rotate-[75deg] brightness-50"
+              style={{ backgroundColor: '#E67E22' }}
+            />
+
             <div
-              className="absolute top-6 right-[-32px] w-48 py-2.5 text-center text-[11px] font-black text-white rotate-45 shadow-lg flex items-center justify-center gap-1.5 px-2"
-              style={{ backgroundColor: '#E67E22', boxShadow: `0 0 25px rgba(230,126,34,0.7)` }}
+              className="absolute top-8 right-[-50px] w-64 py-1.5 text-center rotate-45 shadow-xl flex items-center justify-center gap-2 px-10"
+              style={{ 
+                backgroundColor: '#E67E22', 
+                clipPath: 'polygon(15% 0, 85% 0, 100% 50%, 85% 100%, 15% 100%, 0 50%)'
+              }}
             >
-              <img src={logoEscMap} alt="" className="w-5 h-5 rounded-sm object-cover border border-white/30" />
-              <Trophy size={14} className="stroke-[3]" />
-              <span className="tracking-widest uppercase">Nº{rank} RANKING</span>
+              <div className="bg-white p-0.5 rounded-sm shrink-0">
+                <img src={logoEscMap} alt="" className="w-4 h-4 object-cover" />
+              </div>
+              <div className="flex flex-col items-start leading-none text-black font-black italic uppercase italic tracking-tighter">
+                <span className="text-[12px]">Puesto N°{rank}</span>
+                <span className="text-[8px] opacity-70">de la Provincia</span>
+              </div>
             </div>
           </div>
         )}
