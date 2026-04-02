@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Clock, Users, ChevronLeft, ChevronRight, X } from "lucide-react";
+import { Clock, Users, ChevronLeft, ChevronRight, X, Trophy } from "lucide-react";
 import roomRefugio from "@/assets/room-refugio.jpg";
 import roomCopan from "@/assets/room-copan.jpg";
 import roomInculpados from "@/assets/room-inculpados.jpg";
@@ -60,13 +60,14 @@ function RoomModal({ room, onClose }: { room: any; onClose: () => void }) {
           <div className="absolute inset-0 bg-gradient-to-t from-card via-card/10 to-transparent pointer-events-none" />
           
           {rank && (
-            <div className="absolute top-0 right-0 overflow-hidden w-32 h-32 pointer-events-none">
+            <div className="absolute top-0 right-0 overflow-hidden w-40 h-40 pointer-events-none">
               <div
-                className="absolute top-6 right-[-32px] w-44 py-2 text-center text-[10px] font-black text-white rotate-45 shadow-2xl flex items-center justify-center gap-2 px-2"
-                style={{ backgroundColor: room.accent_color || '#E67E22', boxShadow: `0 0 20px ${room.accent_color}60` }}
+                className="absolute top-8 right-[-40px] w-56 py-2.5 text-center text-[11px] font-black text-white rotate-45 shadow-2xl flex items-center justify-center gap-2.5 px-2"
+                style={{ backgroundColor: '#E67E22', boxShadow: `0 0 30px rgba(230,126,34,0.7)` }}
               >
-                <img src={logoEscMap} alt="" className="w-4 h-4 rounded-sm object-cover border border-white/20" />
-                <span>RANKING N°{rank}</span>
+                <img src={logoEscMap} alt="" className="w-5 h-5 rounded-sm object-cover border border-white/20" />
+                <Trophy size={14} className="stroke-[3]" />
+                <span className="tracking-widest">RANKING N°{rank}</span>
               </div>
             </div>
           )}
@@ -166,13 +167,14 @@ function RoomCard({ room, delay, onClick }: { room: any; delay: number; onClick:
 
         {/* Diagonal ranking ribbon — top right corner */}
         {rank && (
-          <div className="absolute top-0 right-0 overflow-hidden w-28 h-28 pointer-events-none z-10">
+          <div className="absolute top-0 right-0 overflow-hidden w-36 h-36 pointer-events-none z-10">
             <div
-              className="absolute top-5 right-[-28px] w-36 py-1.5 text-center text-[9px] font-black text-white rotate-45 shadow-lg flex items-center justify-center gap-1.5 px-2"
-              style={{ backgroundColor: room.accent_color || '#E67E22', boxShadow: `0 0 15px ${room.accent_color}80` }}
+              className="absolute top-6 right-[-32px] w-48 py-2.5 text-center text-[11px] font-black text-white rotate-45 shadow-lg flex items-center justify-center gap-1.5 px-2"
+              style={{ backgroundColor: '#E67E22', boxShadow: `0 0 25px rgba(230,126,34,0.7)` }}
             >
-              <img src={logoEscMap} alt="" className="w-3.5 h-3.5 rounded-sm object-cover border border-white/30" />
-              <span>N°{rank} ESCMAP</span>
+              <img src={logoEscMap} alt="" className="w-5 h-5 rounded-sm object-cover border border-white/30" />
+              <Trophy size={14} className="stroke-[3]" />
+              <span className="tracking-widest uppercase">Nº{rank} RANKING</span>
             </div>
           </div>
         )}
