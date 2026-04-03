@@ -44,18 +44,31 @@
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border outline-none;
+  }
+  html {
+    @apply antialiased;
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+    width: 100vw;
+    -webkit-text-size-adjust: 100%;
   }
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-background text-foreground;
     font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-overflow-scrolling: touch;
+  }
+  #root {
+    width: 100%;
+    overflow: hidden;
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Bebas Neue', sans-serif;
     letter-spacing: 0.04em;
-  }
-  html {
-    scroll-behavior: smooth;
   }
 }
 
