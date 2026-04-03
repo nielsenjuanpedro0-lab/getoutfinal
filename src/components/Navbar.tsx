@@ -12,25 +12,32 @@ const links = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [visible, setVisible] = useState(true);
-  const [prevScrollPos, setPrevScrollPos] = useState(0);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
+    let lastScrollY = window.scrollY;
+    
     const handleScroll = () => {
-      const currentScrollPos = window.scrollY;
+      const currentScrollY = window.scrollY;
+      
+      // Throttle/Threshold check: Only update if scroll changed significantly
+      if (Math.abs(currentScrollY - lastScrollY) < 10 && currentScrollY > 80) return;
       
       // Scrolled state for background color
-      setScrolled(currentScrollPos > 40);
+      setScrolled(currentScrollY > 40);
       
       // Visibility state for hide-on-scroll
-      const isVisible = prevScrollPos > currentScrollPos || currentScrollPos < 80;
+      // Only hide if scrolling down AND past the header
+      const scrollingDown = currentScrollY > lastScrollY;
+      const isVisible = !scrollingDown || currentScrollY < 80;
+      
       setVisible(isVisible);
-      setPrevScrollPos(currentScrollPos);
+      lastScrollY = currentScrollY;
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [prevScrollPos]);
+  }, []);
 
   return (
     <nav

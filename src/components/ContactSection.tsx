@@ -334,12 +334,12 @@ export default function ContactSection() {
                   </div>
                 </div>
 
-                <div>
+                <div className="min-h-[360px] flex flex-col">
                   {!selectedDate ? (
-                    <div className="h-full flex flex-col items-center justify-center py-12 px-6 rounded-2xl bg-black/30 border border-white/5 border-dashed">
+                    <div className="flex-1 flex flex-col items-center justify-center py-12 px-6 rounded-2xl bg-black/30 border border-white/5 border-dashed">
                       <CalendarDays className="w-10 h-10 text-zinc-600 mb-4" />
-                      <p className="text-zinc-400 text-sm text-center">
-                        Seleccioná una fecha en el calendario (sábados y domingos).
+                      <p className="text-zinc-500 text-sm text-center font-medium max-w-[200px]">
+                        Seleccioná un día en el calendario para ver los horarios.
                       </p>
                     </div>
                   ) : loadingSlots ? (
