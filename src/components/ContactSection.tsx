@@ -282,8 +282,8 @@ export default function ContactSection() {
         {step === "datetime" && (
           <div key="step-datetime" className="animate-slide-in-right max-w-4xl mx-auto px-2">
             <div 
-              className="relative p-6 md:p-12 rounded-[2.5rem] glass-panel transition-all duration-500 overflow-hidden" 
-              style={{borderColor: `${roomColor}40`, boxShadow: `0 30px 100px -20px ${roomColor}15`}}
+              className="relative p-4 sm:p-6 md:p-12 rounded-[2rem] md:rounded-[2.5rem] glass-panel transition-all duration-500 overflow-hidden" 
+              style={{borderColor: `${roomColor}40`, boxShadow: `0 20px 80px -20px ${roomColor}15`}}
             >
               <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-[0.02] blur-3xl -mr-32 -mt-32 rounded-full" />
               
@@ -297,23 +297,38 @@ export default function ContactSection() {
                 Volver a salas
               </button>
               
-              <div className="text-center mb-10">
-                <span className="text-xs md:text-sm font-bold tracking-widest uppercase mb-2 inline-block px-4 py-1 rounded-full bg-white/5 border border-white/10" style={{color: roomColor}}>
+              <div className="text-center mb-6 md:mb-10">
+                <span className="text-[10px] md:text-sm font-bold tracking-widest uppercase mb-2 inline-block px-3 py-1 rounded-full bg-white/5 border border-white/10" style={{color: roomColor}}>
                   {room?.name}
                 </span>
-                <h3 className="font-display text-3xl md:text-4xl text-white mt-2 md:mt-4">Elegí fecha y horario</h3>
+                <h3 className="font-display text-2xl md:text-4xl text-white mt-1 md:mt-4">Elegí fecha y horario</h3>
               </div>
 
               <div className="grid md:grid-cols-2 gap-12 items-start">
-                <div className="flex justify-center">
-                  <div className="p-4 rounded-2xl bg-black/50 border border-white/5 shadow-inner">
+                <div className="flex justify-center w-full">
+                  <div className="p-2 sm:p-4 rounded-2xl bg-black/50 border border-white/5 shadow-inner scale-[0.9] sm:scale-100 origin-center">
                     <Calendar
                       mode="single"
                       selected={selectedDate}
-                      onSelect={(d) => { setSelectedDate(d); setSelectedTime(""); }}
+                      onSelect={(d) => { 
+                        setSelectedDate(d); 
+                        setSelectedTime("");
+                        // Auto-scroll to time slots on mobile
+                        if (window.innerWidth < 768) {
+                          setTimeout(() => {
+                            const el = document.getElementById('available-times');
+                            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                          }, 100);
+                        }
+                      }}
                       disabled={disableDate}
                       locale={es}
-                      className="pointer-events-auto"
+                      className="pointer-events-auto p-0 sm:p-3"
+                      classNames={{
+                        day: "h-8 w-8 sm:h-9 sm:w-9 p-0 font-normal aria-selected:opacity-100",
+                        head_cell: "text-muted-foreground rounded-md w-8 sm:w-9 font-normal text-[0.7rem] sm:text-[0.8rem]",
+                        cell: "h-8 w-8 sm:h-9 sm:w-9 text-center text-sm p-0 relative"
+                      }}
                       style={{ '--theme-color': roomColor } as any}
                     />
                   </div>
@@ -342,11 +357,11 @@ export default function ContactSection() {
                       </p>
                     </div>
                   ) : (
-                    <div className="animate-fade-in-up">
-                      <p className="text-xs font-bold tracking-[0.2em] text-zinc-500 mb-6 text-center uppercase">
+                    <div className="animate-fade-in-up" id="available-times">
+                      <p className="text-[10px] sm:text-xs font-bold tracking-[0.2em] text-zinc-500 mb-4 md:mb-6 text-center uppercase">
                         Horarios Disponibles
                       </p>
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-2 gap-3 md:gap-4">
                         {roomSlots.map((slot) => {
                           const isAvailable = availableSlots.includes(slot);
                           const isSelected = selectedTime === slot;
@@ -359,12 +374,12 @@ export default function ContactSection() {
                                 setSelectedTime(slot); 
                                 setTimeout(() => setStep("details"), 400); 
                               }}
-                              className={`py-5 px-2 rounded-2xl text-xl font-bold transition-all duration-300 border shadow-sm active:scale-90 ${
+                              className={`py-3 md:py-5 px-2 rounded-xl md:rounded-2xl text-lg md:text-xl font-bold transition-all duration-300 border shadow-sm active:scale-90 ${
                                 isSelected
                                   ? "text-white shadow-[0_10px_20px_-5px_rgba(0,0,0,0.5)] z-10"
                                   : isAvailable
-                                  ? "bg-white/5 border-white/5 text-zinc-300 hover:bg-white/10 hover:border-white/20"
-                                  : "bg-black/40 border-white/0 text-zinc-700 line-through cursor-not-allowed"
+                                  ? "bg-white/5 border-white/5 text-zinc-400 hover:bg-white/10 hover:border-white/20"
+                                  : "bg-black/40 border-white/0 text-zinc-800 line-through cursor-not-allowed"
                               }`}
                               style={isSelected ? { backgroundColor: roomColor, borderColor: roomColor, boxShadow: `0 0 30px ${roomColor}40` } : {}}
                             >
@@ -408,12 +423,12 @@ export default function ContactSection() {
                 Elegir otro horario
               </button>
               
-              <div className="text-center mb-10">
+              <div className="text-center mb-6 md:mb-10">
                 <span className="text-[10px] md:text-sm font-black tracking-[0.25em] uppercase mb-4 inline-block px-5 py-2 rounded-full bg-white/5 border border-white/10" style={{color: roomColor}}>
                   {room?.name} · {selectedTime} HS
                 </span>
-                <h3 className="font-display text-4xl md:text-6xl text-white mt-2">DATOS DEL EQUIPO</h3>
-                <p className="text-zinc-500 text-xs md:text-sm mt-4 max-w-md mx-auto">
+                <h3 className="font-display text-3xl md:text-6xl text-white mt-1 md:mt-2">DATOS DEL EQUIPO</h3>
+                <p className="text-zinc-500 text-[10px] md:text-sm mt-3 max-w-md mx-auto">
                   Completá para procesar la reserva.
                 </p>
               </div>
@@ -484,13 +499,13 @@ export default function ContactSection() {
                 <div className="pt-6">
                   <button
                     type="submit" disabled={loading}
-                    className="w-full text-white font-black py-7 rounded-[2rem] text-xl hover:brightness-110 active:scale-[0.98] transition-all duration-500 disabled:opacity-60 flex flex-col items-center justify-center gap-1 shadow-2xl relative overflow-hidden group"
-                    style={{backgroundColor: roomColor, boxShadow: `0 25px 60px -15px ${roomColor}80`}}
+                    className="w-full text-white font-black py-5 md:py-7 rounded-[1.5rem] md:rounded-[2rem] text-lg md:text-xl hover:brightness-110 active:scale-[0.98] transition-all duration-500 disabled:opacity-60 flex flex-col items-center justify-center gap-1 shadow-2xl relative overflow-hidden group"
+                    style={{backgroundColor: roomColor, boxShadow: `0 20px 50px -15px ${roomColor}80`}}
                   >
                     <span className="relative z-10 uppercase tracking-[0.2em]">
                       {loading ? "PROCESANDO..." : "CONFIRMAR Y PAGAR SEÑA"}
                     </span>
-                    <span className="relative z-10 text-[10px] opacity-70 tracking-widest font-bold">
+                    <span className="relative z-10 text-[9px] md:text-[10px] opacity-70 tracking-widest font-bold">
                       REDirección segura a MERCADO PAGO
                     </span>
                     <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
