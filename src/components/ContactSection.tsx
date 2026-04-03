@@ -175,7 +175,7 @@ export default function ContactSection() {
   };
 
   return (
-    <section id="reservar" className="relative py-24 md:py-32 overflow-hidden">
+    <section id="reservar" className="relative py-12 md:py-32 overflow-hidden px-4 sm:px-6">
       
       {/* Dynamic Background Glow */}
       <div 
@@ -183,8 +183,8 @@ export default function ContactSection() {
         style={{ backgroundColor: selectedRoom ? roomColor : 'transparent' }}
       />
       
-      <div className="container max-w-5xl relative z-10">
-        <h2 className="reveal font-display text-6xl md:text-8xl text-center text-white mb-6 drop-shadow-2xl">
+      <div className="container max-w-5xl relative z-10 px-0">
+        <h2 className="reveal font-display text-4xl sm:text-6xl md:text-8xl text-center text-white mb-6 drop-shadow-2xl px-2">
           Reservá tu <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">aventura</span>
         </h2>
 
@@ -216,21 +216,21 @@ export default function ContactSection() {
 
         {/* Step 1: Room */}
         {step === "room" && (
-          <div className="reveal">
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="reveal px-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {rooms.map((r) => (
                 <button
                   key={r.id}
                   onClick={() => { setSelectedRoom(r.id); setStep("datetime"); }}
-                  className="group relative overflow-hidden rounded-2xl bg-zinc-950 text-left transition-all duration-500 hover:-translate-y-2 aspect-video sm:aspect-[4/5] shadow-xl"
+                  className="group relative overflow-hidden rounded-2xl bg-zinc-950 text-left transition-all duration-500 hover:-translate-y-2 aspect-[2.3/1] sm:aspect-[4/5] shadow-xl"
                   style={{ border: `1px solid ${r.accent_color || '#3f3f46'}40` }}
                 >
                   <img src={getRoomImage(r)} alt={r.name} className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-80 group-hover:scale-110 transition-all duration-700" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
                   
-                  <div className="absolute bottom-0 inset-x-0 p-6 z-10">
+                  <div className="absolute bottom-0 inset-x-0 p-4 md:p-6 z-10">
                     <h4 
-                      className="font-display text-4xl text-white mb-1 transition-all duration-300 drop-shadow-md"
+                      className="font-display text-2xl md:text-4xl text-white mb-1 transition-all duration-300 drop-shadow-md"
                       style={{textShadow: `0 0 30px ${r.accent_color || '#e67e22'}`}}
                     >
                       {r.name}
@@ -263,23 +263,23 @@ export default function ContactSection() {
 
         {/* Step 2: Date & Time */}
         {step === "datetime" && (
-          <div className="reveal max-w-4xl mx-auto">
+          <div className="reveal max-w-4xl mx-auto px-2">
             <div 
-              className="relative p-8 md:p-12 rounded-3xl bg-zinc-950/80 backdrop-blur-xl border transition-all duration-500" 
+              className="relative p-5 md:p-12 rounded-3xl bg-zinc-950/80 backdrop-blur-xl border transition-all duration-500" 
               style={{borderColor: `${roomColor}30`, boxShadow: `0 20px 60px -15px ${roomColor}20`}}
             >
               <button
                 onClick={() => { setStep("room"); setSelectedDate(undefined); setSelectedTime(""); }}
-                className="flex items-center gap-1 text-sm text-zinc-400 hover:text-white mb-8 transition-colors"
+                className="flex items-center gap-1 text-sm text-zinc-400 hover:text-white mb-6 md:mb-8 transition-colors"
               >
                 <ChevronLeft className="w-4 h-4" /> Volver a salas
               </button>
               
               <div className="text-center mb-10">
-                <span className="text-sm font-bold tracking-widest uppercase mb-2 inline-block px-4 py-1 rounded-full bg-white/5 border border-white/10" style={{color: roomColor}}>
+                <span className="text-xs md:text-sm font-bold tracking-widest uppercase mb-2 inline-block px-4 py-1 rounded-full bg-white/5 border border-white/10" style={{color: roomColor}}>
                   {room?.name}
                 </span>
-                <h3 className="font-display text-4xl text-white mt-4">Elegí fecha y horario</h3>
+                <h3 className="font-display text-3xl md:text-4xl text-white mt-2 md:mt-4">Elegí fecha y horario</h3>
               </div>
 
               <div className="grid md:grid-cols-2 gap-12 items-start">
@@ -321,7 +321,7 @@ export default function ContactSection() {
                       <p className="text-sm font-medium text-white mb-4 text-center capitalize">
                         {format(selectedDate, "EEEE d 'de' MMMM", { locale: es })}
                       </p>
-                      <div className="grid grid-cols-2 gap-3">
+                      <div className="grid grid-cols-2 md:grid-cols-2 gap-3">
                         {roomSlots.map((slot) => {
                           const isAvailable = availableSlots.includes(slot);
                           const isSelected = selectedTime === slot;
@@ -330,12 +330,12 @@ export default function ContactSection() {
                               key={slot}
                               type="button"
                               disabled={!isAvailable}
-                              onClick={() => setSelectedTime(slot)}
+                              onClick={() => { setSelectedTime(slot); setTimeout(() => setStep("details"), 300); }}
                               className={`py-4 px-2 rounded-xl text-lg font-bold transition-all duration-300 border ${
                                 isSelected
                                   ? "text-white scale-105"
                                   : isAvailable
-                                  ? "bg-zinc-900 border-white/10 text-zinc-300 hover:bg-zinc-800"
+                                  ? "bg-zinc-900 border-white/10 text-zinc-300 active:scale-95"
                                   : "bg-black/50 border-white/5 text-zinc-600 line-through cursor-not-allowed"
                               }`}
                               style={isSelected ? { backgroundColor: roomColor, borderColor: roomColor, boxShadow: `0 0 20px ${roomColor}50` } : {}}
@@ -365,9 +365,9 @@ export default function ContactSection() {
 
         {/* Step 3: Details */}
         {step === "details" && (
-          <div className="reveal max-w-2xl mx-auto">
+          <div className="reveal max-w-2xl mx-auto px-2">
             <div 
-              className="relative p-8 md:p-12 rounded-3xl bg-zinc-950/80 backdrop-blur-xl border transition-all duration-500" 
+              className="relative p-6 md:p-12 rounded-3xl bg-zinc-950/80 backdrop-blur-xl border transition-all duration-500" 
               style={{borderColor: `${roomColor}30`, boxShadow: `0 20px 60px -15px ${roomColor}20`}}
             >
               <button
@@ -378,10 +378,10 @@ export default function ContactSection() {
               </button>
               
               <div className="text-center mb-10">
-                <span className="text-sm font-bold tracking-widest uppercase mb-2 inline-block px-4 py-1 rounded-full bg-white/5 border border-white/10" style={{color: roomColor}}>
+                <span className="text-[10px] md:text-sm font-bold tracking-widest uppercase mb-2 inline-block px-3 py-1 rounded-full bg-white/5 border border-white/10" style={{color: roomColor}}>
                   {room?.name} · {selectedDate && format(selectedDate, "d/MM/yyyy")} · {selectedTime} HS
                 </span>
-                <h3 className="font-display text-4xl text-white mt-4">Completá tu reserva</h3>
+                <h3 className="font-display text-3xl md:text-4xl text-white mt-4">Completá tu reserva</h3>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-5">
@@ -395,11 +395,12 @@ export default function ContactSection() {
                     placeholder="Nombre completo"
                   />
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div>
                     <label className="text-sm font-medium text-zinc-300 mb-1.5 block">WhatsApp *</label>
                     <input
                       type="tel" required value={formData.whatsapp}
+                      inputMode="tel"
                       onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
                       className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-4 text-white text-sm placeholder:text-zinc-600 focus:outline-none focus:ring-1 transition-shadow"
                       style={{ '--tw-ring-color': roomColor } as any}
