@@ -40,14 +40,46 @@ export default function ContactSection() {
   const room = useMemo(() => rooms.find((r) => r.id === selectedRoom), [rooms, selectedRoom]);
   const roomColor = room?.accent_color || "hsl(var(--primary))";
 
+  const DEFAULT_ROOMS: Room[] = [
+    {
+      id: "fallback-1",
+      name: "Ruinas de Copán",
+      players: "2 a 6",
+      accent_color: "#f0a500",
+      image_url: null,
+      price: 15000
+    },
+    {
+      id: "fallback-2",
+      name: "Inculpados",
+      players: "2 a 6",
+      accent_color: "#4A90D9",
+      image_url: null,
+      price: 15000
+    },
+    {
+      id: "fallback-3",
+      name: "El Refugio",
+      players: "2 a 8",
+      accent_color: "#27AE60",
+      image_url: null,
+      price: 15000
+    }
+  ];
+
   // Load rooms
   useEffect(() => {
     supabase
       .from("rooms")
       .select("*")
-      .eq("is_active", true)
       .order("sort_order")
-      .then(({ data }) => { if (data) setRooms(data as any); });
+      .then(({ data }) => { 
+        if (data && data.length > 0) {
+          setRooms(data as any); 
+        } else {
+          setRooms(DEFAULT_ROOMS);
+        }
+      });
   }, []);
 
   // Load room-specific time slots
