@@ -409,71 +409,93 @@ export default function ContactSection() {
               </button>
               
               <div className="text-center mb-10">
-                <span className="text-[10px] md:text-sm font-black tracking-[0.25em] uppercase mb-4 inline-block px-5 py-1.5 rounded-full bg-white/5 border border-white/10" style={{color: roomColor}}>
+                <span className="text-[10px] md:text-sm font-black tracking-[0.25em] uppercase mb-4 inline-block px-5 py-2 rounded-full bg-white/5 border border-white/10" style={{color: roomColor}}>
                   {room?.name} · {selectedTime} HS
                 </span>
-                <h3 className="font-display text-4xl md:text-5xl text-white mt-2">Detalles del Capitán</h3>
+                <h3 className="font-display text-4xl md:text-6xl text-white mt-2">DATOS DEL EQUIPO</h3>
+                <p className="text-zinc-500 text-xs md:text-sm mt-4 max-w-md mx-auto">
+                  Completá para procesar la reserva.
+                </p>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-5">
-                <div>
-                  <label className="text-sm font-medium text-zinc-300 mb-1.5 block">Nombre del capitán *</label>
-                  <input
-                    type="text" required value={formData.nombre}
-                    onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
-                    className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-4 text-white text-sm placeholder:text-zinc-600 focus:outline-none focus:ring-1 transition-shadow"
-                    style={{ '--tw-ring-color': roomColor } as any}
-                    placeholder="Nombre completo"
-                  />
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <div>
-                    <label className="text-sm font-medium text-zinc-300 mb-1.5 block">WhatsApp *</label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold tracking-widest text-zinc-500 uppercase ml-1">Capitán *</label>
+                    <input
+                      type="text" required value={formData.nombre}
+                      onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
+                      className="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-white text-base placeholder:text-zinc-700 focus:outline-none focus:ring-2 transition-all"
+                      style={{ '--tw-ring-color': `${roomColor}40` } as any}
+                      placeholder="Nombre completo"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold tracking-widest text-zinc-500 uppercase ml-1">WhatsApp *</label>
                     <input
                       type="tel" required value={formData.whatsapp}
                       inputMode="tel"
                       onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
-                      className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-4 text-white text-sm placeholder:text-zinc-600 focus:outline-none focus:ring-1 transition-shadow"
-                      style={{ '--tw-ring-color': roomColor } as any}
-                      placeholder="+54 9 2262 ..."
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-zinc-300 mb-1.5 block">Email (opcional)</label>
-                    <input
-                      type="email" value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-4 text-white text-sm placeholder:text-zinc-600 focus:outline-none focus:ring-1 transition-shadow"
-                      style={{ '--tw-ring-color': roomColor } as any}
-                      placeholder="tu@email.com"
+                      className="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-white text-base placeholder:text-zinc-700 focus:outline-none focus:ring-2 transition-all"
+                      style={{ '--tw-ring-color': `${roomColor}40` } as any}
+                      placeholder="+54 2262 ..."
                     />
                   </div>
                 </div>
+                {/* Email (opcional) centered/full on mobile */}
+                <div className="space-y-2">
+                  <label className="text-xs font-bold tracking-widest text-zinc-500 uppercase ml-1">Email (Opcional)</label>
+                  <input
+                    type="email" value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-white text-base placeholder:text-zinc-700 focus:outline-none focus:ring-2 transition-all"
+                    style={{ '--tw-ring-color': `${roomColor}40` } as any}
+                    placeholder="tu@email.com"
+                  />
+                </div>
 
-                {/* Reservation info */}
-                <div className="rounded-xl border border-white/10 bg-white/5 p-5 space-y-2 mt-2">
+                {/* Reservation info summary - Re-organized for clarity */}
+                <div className="rounded-3xl border border-white/10 bg-white/5 p-6 md:p-8 space-y-4 mt-8 shadow-inner overflow-hidden relative">
                   <div className="flex items-center justify-between text-base">
-                    <span className="text-zinc-400 font-medium tracking-wide">Inversión aventura</span>
-                    <span className="text-white font-black text-2xl" style={{textShadow: `0 0 20px ${roomColor}80`}}>
-                      ${room?.price?.toLocaleString() || "15.000"}
+                    <span className="text-zinc-400 font-bold tracking-widest uppercase text-xs">Valor de la seña</span>
+                    <span className="text-white font-black text-3xl" style={{textShadow: `0 0 30px ${roomColor}80`}}>
+                      $15.000
                     </span>
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-zinc-500 italic">
-                    <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
-                    Presentarse 15 min antes en el búnker.
+                  
+                  <div className="h-px bg-white/5 w-full" />
+                  
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-3 text-sm text-zinc-300 font-medium">
+                      <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0" style={{backgroundColor: `${roomColor}20`, color: roomColor}}>
+                        <CheckCircle className="w-3.5 h-3.5" />
+                      </div>
+                      Abonando esta seña asegurás tu turno.
+                    </div>
+                    <div className="flex items-center gap-3 text-sm text-zinc-300 font-medium">
+                      <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0" style={{backgroundColor: `${roomColor}20`, color: roomColor}}>
+                        <MapPin className="w-3.5 h-3.5" />
+                      </div>
+                      El resto se abona en el búnker.
+                    </div>
                   </div>
                 </div>
 
-                <button
-                  type="submit" disabled={loading}
-                  className="w-full mt-6 text-white font-bold py-6 rounded-2xl text-xl hover:brightness-110 active:scale-[0.97] transition-all duration-500 disabled:opacity-60 flex items-center justify-center gap-3 shadow-2xl relative overflow-hidden group"
-                  style={{backgroundColor: roomColor, boxShadow: `0 15px 40px -10px ${roomColor}60`}}
-                >
-                  <span className="relative z-10 uppercase tracking-widest">
-                    {loading ? "PROCESANDO..." : "CONFIRMAR RESERVA →"}
-                  </span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
-                </button>
+                <div className="pt-6">
+                  <button
+                    type="submit" disabled={loading}
+                    className="w-full text-white font-black py-7 rounded-[2rem] text-xl hover:brightness-110 active:scale-[0.98] transition-all duration-500 disabled:opacity-60 flex flex-col items-center justify-center gap-1 shadow-2xl relative overflow-hidden group"
+                    style={{backgroundColor: roomColor, boxShadow: `0 25px 60px -15px ${roomColor}80`}}
+                  >
+                    <span className="relative z-10 uppercase tracking-[0.2em]">
+                      {loading ? "PROCESANDO..." : "CONFIRMAR Y PAGAR SEÑA"}
+                    </span>
+                    <span className="relative z-10 text-[10px] opacity-70 tracking-widest font-bold">
+                      REDirección segura a MERCADO PAGO
+                    </span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
+                  </button>
+                </div>
               </form>
             </div>
           </div>
