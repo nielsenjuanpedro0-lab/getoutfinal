@@ -190,24 +190,40 @@ export default function ContactSection() {
 
         {/* Progress */}
         {step !== "success" && (
-          <div className="flex items-center justify-center gap-3 mb-12">
+          <div className="flex items-center justify-center gap-2 md:gap-4 mb-10 md:mb-16">
             {(["room", "datetime", "details"] as Step[]).map((s, i) => {
               const stepOrder = ["room", "datetime", "details"];
-              const current = stepOrder.indexOf(step);
+              const currentIdx = stepOrder.indexOf(step);
+              const isCompleted = currentIdx > i;
+              const isActive = currentIdx === i;
+              
               return (
-                <div key={s} className="flex items-center gap-3">
-                  <div 
-                    className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-500 shadow-lg"
-                    style={{
-                      backgroundColor: current === i ? roomColor : current > i ? `${roomColor}30` : '#27272a',
-                      color: current === i ? '#fff' : current > i ? roomColor : '#71717a',
-                      boxShadow: current === i ? `0 0 20px ${roomColor}50` : 'none',
-                      border: current === i ? 'none' : `1px solid ${current > i ? roomColor : '#3f3f46'}`
-                    }}
-                  >
-                    {i + 1}
+                <div key={s} className="flex items-center">
+                  <div className="flex flex-col items-center gap-2">
+                    <div 
+                      className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center text-sm md:text-base font-bold transition-all duration-500 ${isActive ? 'animate-pulse-glow' : ''}`}
+                      style={{
+                        backgroundColor: isActive ? roomColor : isCompleted ? `${roomColor}20` : '#18181b',
+                        color: isActive ? '#fff' : isCompleted ? roomColor : '#52525b',
+                        boxShadow: isActive ? `0 0 25px ${roomColor}60` : 'none',
+                        border: `2px solid ${isActive || isCompleted ? roomColor : '#27272a'}`
+                      }}
+                    >
+                      {isCompleted ? <CheckCircle className="w-5 h-5 md:w-6 md:h-6" /> : i + 1}
+                    </div>
                   </div>
-                  {i < 2 && <div className="w-12 h-px" style={{ backgroundColor: current > i ? roomColor : '#3f3f46', transition: 'background-color 0.5s' }} />}
+                  {i < 2 && (
+                    <div className="w-8 sm:w-16 md:w-24 h-[2px] mx-1 md:mx-2 rounded-full bg-zinc-800 overflow-hidden">
+                      <div 
+                        className="h-full transition-all duration-700 ease-in-out" 
+                        style={{ 
+                          width: isCompleted ? '100%' : '0%', 
+                          backgroundColor: roomColor,
+                          boxShadow: isCompleted ? `0 0 10px ${roomColor}` : 'none'
+                        }} 
+                      />
+                    </div>
+                  )}
                 </div>
               );
             })}
@@ -216,31 +232,32 @@ export default function ContactSection() {
 
         {/* Step 1: Room */}
         {step === "room" && (
-          <div className="reveal px-2">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+          <div key="step-room" className="animate-slide-in-right px-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
               {rooms.map((r) => (
                 <button
                   key={r.id}
-                  onClick={() => { setSelectedRoom(r.id); setStep("datetime"); }}
-                  className="group relative overflow-hidden rounded-2xl bg-zinc-950 text-left transition-all duration-500 hover:-translate-y-2 aspect-[2.3/1] sm:aspect-[4/5] shadow-xl"
-                  style={{ border: `1px solid ${r.accent_color || '#3f3f46'}40` }}
+                  onClick={() => { setSelectedRoom(r.id); setTimeout(() => setStep("datetime"), 50); }}
+                  className="group relative overflow-hidden rounded-3xl bg-zinc-950 text-left transition-all duration-500 hover:-translate-y-2 aspect-[2.4/1] sm:aspect-[4/5] shadow-2xl active:scale-[0.98]"
+                  style={{ border: `1px solid ${r.accent_color || '#3f3f46'}30` }}
                 >
-                  <img src={getRoomImage(r)} alt={r.name} className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-80 group-hover:scale-110 transition-all duration-700" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
+                  <img src={getRoomImage(r)} alt={r.name} className="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:opacity-60 group-hover:scale-110 transition-all duration-1000" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
                   
-                  <div className="absolute bottom-0 inset-x-0 p-4 md:p-6 z-10">
+                  <div className="absolute bottom-0 inset-x-0 p-5 md:p-8 z-10">
                     <h4 
-                      className="font-display text-2xl md:text-4xl text-white mb-1 transition-all duration-300 drop-shadow-md"
-                      style={{textShadow: `0 0 30px ${r.accent_color || '#e67e22'}`}}
+                      className="font-display text-3xl md:text-5xl text-white mb-1 transition-all duration-500 drop-shadow-md group-hover:translate-x-2"
+                      style={{textShadow: `0 0 40px ${r.accent_color || '#e67e22'}80`}}
                     >
                       {r.name}
                     </h4>
+                    <div className="w-0 group-hover:w-16 h-1 rounded-full transition-all duration-500 mt-2" style={{backgroundColor: r.accent_color}} />
                   </div>
                   
                   {/* Hover Border Glow */}
                   <div 
-                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl" 
-                    style={{boxShadow: `inset 0 0 30px ${r.accent_color || '#e67e22'}40`, border: `2px solid ${r.accent_color || '#e67e22'}`}} 
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none rounded-3xl" 
+                    style={{boxShadow: `inset 0 0 50px ${r.accent_color || '#e67e22'}30`, border: `2px solid ${r.accent_color || '#e67e22'}80`}} 
                   />
                 </button>
               ))}
@@ -263,16 +280,21 @@ export default function ContactSection() {
 
         {/* Step 2: Date & Time */}
         {step === "datetime" && (
-          <div className="reveal max-w-4xl mx-auto px-2">
+          <div key="step-datetime" className="animate-slide-in-right max-w-4xl mx-auto px-2">
             <div 
-              className="relative p-5 md:p-12 rounded-3xl bg-zinc-950/80 backdrop-blur-xl border transition-all duration-500" 
-              style={{borderColor: `${roomColor}30`, boxShadow: `0 20px 60px -15px ${roomColor}20`}}
+              className="relative p-6 md:p-12 rounded-[2.5rem] glass-panel transition-all duration-500 overflow-hidden" 
+              style={{borderColor: `${roomColor}40`, boxShadow: `0 30px 100px -20px ${roomColor}15`}}
             >
+              <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-[0.02] blur-3xl -mr-32 -mt-32 rounded-full" />
+              
               <button
                 onClick={() => { setStep("room"); setSelectedDate(undefined); setSelectedTime(""); }}
-                className="flex items-center gap-1 text-sm text-zinc-400 hover:text-white mb-6 md:mb-8 transition-colors"
+                className="group flex items-center gap-2 text-sm text-zinc-400 hover:text-white mb-8 transition-all hover:-translate-x-1"
               >
-                <ChevronLeft className="w-4 h-4" /> Volver a salas
+                <div className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center group-hover:border-white/30 transition-colors">
+                  <ChevronLeft className="w-4 h-4" />
+                </div>
+                Volver a salas
               </button>
               
               <div className="text-center mb-10">
@@ -306,22 +328,25 @@ export default function ContactSection() {
                       </p>
                     </div>
                   ) : loadingSlots ? (
-                    <div className="flex flex-col items-center justify-center py-16 text-sm text-zinc-400 gap-4">
-                      <Loader2 className="w-8 h-8 animate-spin" style={{color: roomColor}} />
-                      Buscando disponibilidad...
+                    <div className="flex flex-col items-center justify-center py-20 gap-6">
+                      <div className="relative">
+                        <div className="w-16 h-16 rounded-full border-t-2 border-primary animate-spin" style={{borderColor: roomColor}} />
+                        <div className="absolute inset-0 w-16 h-16 rounded-full border-2 border-white/5" />
+                      </div>
+                      <p className="text-sm text-zinc-400 font-medium animate-pulse">Consultando disponibilidad...</p>
                     </div>
                   ) : availableSlots.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-16 px-6 rounded-2xl bg-red-950/20 border border-red-500/20">
-                      <p className="text-sm text-red-400 text-center">
-                        No hay turnos disponibles para esta fecha. Probá otro día.
+                    <div className="flex flex-col items-center justify-center py-16 px-6 rounded-3xl bg-red-950/10 border border-red-500/20 backdrop-blur-sm animate-fade-in-up">
+                      <p className="text-sm text-red-300 text-center font-medium">
+                        No hay turnos hoy. <br/>¿Buscamos otro día?
                       </p>
                     </div>
                   ) : (
-                    <>
-                      <p className="text-sm font-medium text-white mb-4 text-center capitalize">
-                        {format(selectedDate, "EEEE d 'de' MMMM", { locale: es })}
+                    <div className="animate-fade-in-up">
+                      <p className="text-xs font-bold tracking-[0.2em] text-zinc-500 mb-6 text-center uppercase">
+                        Horarios Disponibles
                       </p>
-                      <div className="grid grid-cols-2 md:grid-cols-2 gap-3">
+                      <div className="grid grid-cols-2 gap-4">
                         {roomSlots.map((slot) => {
                           const isAvailable = availableSlots.includes(slot);
                           const isSelected = selectedTime === slot;
@@ -330,22 +355,25 @@ export default function ContactSection() {
                               key={slot}
                               type="button"
                               disabled={!isAvailable}
-                              onClick={() => { setSelectedTime(slot); setTimeout(() => setStep("details"), 300); }}
-                              className={`py-4 px-2 rounded-xl text-lg font-bold transition-all duration-300 border ${
+                              onClick={() => { 
+                                setSelectedTime(slot); 
+                                setTimeout(() => setStep("details"), 400); 
+                              }}
+                              className={`py-5 px-2 rounded-2xl text-xl font-bold transition-all duration-300 border shadow-sm active:scale-90 ${
                                 isSelected
-                                  ? "text-white scale-105"
+                                  ? "text-white shadow-[0_10px_20px_-5px_rgba(0,0,0,0.5)] z-10"
                                   : isAvailable
-                                  ? "bg-zinc-900 border-white/10 text-zinc-300 active:scale-95"
-                                  : "bg-black/50 border-white/5 text-zinc-600 line-through cursor-not-allowed"
+                                  ? "bg-white/5 border-white/5 text-zinc-300 hover:bg-white/10 hover:border-white/20"
+                                  : "bg-black/40 border-white/0 text-zinc-700 line-through cursor-not-allowed"
                               }`}
-                              style={isSelected ? { backgroundColor: roomColor, borderColor: roomColor, boxShadow: `0 0 20px ${roomColor}50` } : {}}
+                              style={isSelected ? { backgroundColor: roomColor, borderColor: roomColor, boxShadow: `0 0 30px ${roomColor}40` } : {}}
                             >
                               {slot}
                             </button>
                           );
                         })}
                       </div>
-                    </>
+                    </div>
                   )}
 
                   {selectedTime && (
@@ -365,23 +393,26 @@ export default function ContactSection() {
 
         {/* Step 3: Details */}
         {step === "details" && (
-          <div className="reveal max-w-2xl mx-auto px-2">
+          <div key="step-details" className="animate-slide-in-right max-w-2xl mx-auto px-2">
             <div 
-              className="relative p-6 md:p-12 rounded-3xl bg-zinc-950/80 backdrop-blur-xl border transition-all duration-500" 
-              style={{borderColor: `${roomColor}30`, boxShadow: `0 20px 60px -15px ${roomColor}20`}}
+              className="relative p-7 md:p-14 rounded-[2.5rem] glass-panel transition-all duration-500" 
+              style={{borderColor: `${roomColor}40`, boxShadow: `0 30px 100px -20px ${roomColor}15`}}
             >
               <button
                 onClick={() => setStep("datetime")}
-                className="flex items-center gap-1 text-sm text-zinc-400 hover:text-white mb-8 transition-colors"
+                className="group flex items-center gap-2 text-sm text-zinc-400 hover:text-white mb-8 transition-all hover:-translate-x-1"
               >
-                <ChevronLeft className="w-4 h-4" /> Volver atrás
+                <div className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center group-hover:border-white/30 transition-colors">
+                  <ChevronLeft className="w-4 h-4" />
+                </div>
+                Elegir otro horario
               </button>
               
               <div className="text-center mb-10">
-                <span className="text-[10px] md:text-sm font-bold tracking-widest uppercase mb-2 inline-block px-3 py-1 rounded-full bg-white/5 border border-white/10" style={{color: roomColor}}>
-                  {room?.name} · {selectedDate && format(selectedDate, "d/MM/yyyy")} · {selectedTime} HS
+                <span className="text-[10px] md:text-sm font-black tracking-[0.25em] uppercase mb-4 inline-block px-5 py-1.5 rounded-full bg-white/5 border border-white/10" style={{color: roomColor}}>
+                  {room?.name} · {selectedTime} HS
                 </span>
-                <h3 className="font-display text-3xl md:text-4xl text-white mt-4">Completá tu reserva</h3>
+                <h3 className="font-display text-4xl md:text-5xl text-white mt-2">Detalles del Capitán</h3>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-5">
@@ -421,22 +452,27 @@ export default function ContactSection() {
 
                 {/* Reservation info */}
                 <div className="rounded-xl border border-white/10 bg-white/5 p-5 space-y-2 mt-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-zinc-400">Valor de la reserva</span>
-                    <span className="text-white font-bold text-lg">${room?.price?.toLocaleString() || "15.000"}</span>
+                  <div className="flex items-center justify-between text-base">
+                    <span className="text-zinc-400 font-medium tracking-wide">Inversión aventura</span>
+                    <span className="text-white font-black text-2xl" style={{textShadow: `0 0 20px ${roomColor}80`}}>
+                      ${room?.price?.toLocaleString() || "15.000"}
+                    </span>
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-zinc-400">
+                  <div className="flex items-center gap-2 text-xs text-zinc-500 italic">
                     <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
-                    Llegar 15 minutos antes del horario elegido
+                    Presentarse 15 min antes en el búnker.
                   </div>
                 </div>
 
                 <button
                   type="submit" disabled={loading}
-                  className="w-full mt-4 text-white font-bold py-5 rounded-xl text-lg hover:brightness-110 active:scale-[0.97] transition-all duration-300 disabled:opacity-60 flex items-center justify-center gap-2 shadow-lg"
-                  style={{backgroundColor: roomColor, boxShadow: `0 0 25px ${roomColor}40`}}
+                  className="w-full mt-6 text-white font-bold py-6 rounded-2xl text-xl hover:brightness-110 active:scale-[0.97] transition-all duration-500 disabled:opacity-60 flex items-center justify-center gap-3 shadow-2xl relative overflow-hidden group"
+                  style={{backgroundColor: roomColor, boxShadow: `0 15px 40px -10px ${roomColor}60`}}
                 >
-                  {loading ? (<><Loader2 className="w-5 h-5 animate-spin" /> PROCESANDO...</>) : "CONFIRMAR Y PAGAR →"}
+                  <span className="relative z-10 uppercase tracking-widest">
+                    {loading ? "PROCESANDO..." : "CONFIRMAR RESERVA →"}
+                  </span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
                 </button>
               </form>
             </div>
