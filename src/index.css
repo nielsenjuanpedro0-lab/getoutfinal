@@ -134,23 +134,30 @@
   100% { transform: translateX(-50%); }
 }
 
-/* Scroll reveal */
+/* Scroll reveal — Snappier for mobile fluency */
 .reveal {
   opacity: 0;
-  transform: translateY(20px);
-  filter: blur(4px);
-  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-              filter 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(30px);
+  filter: blur(8px);
+  will-change: transform, opacity, filter;
+  transition: opacity 0.45s cubic-bezier(0.2, 0, 0, 1),
+              transform 0.45s cubic-bezier(0.2, 0, 0, 1),
+              filter 0.45s cubic-bezier(0.2, 0, 0, 1);
 }
 .reveal.visible {
   opacity: 1;
   transform: translateY(0);
   filter: blur(0);
 }
-.reveal-delay-1 { transition-delay: 80ms; }
-.reveal-delay-2 { transition-delay: 160ms; }
-.reveal-delay-3 { transition-delay: 240ms; }
+.reveal-delay-1 { transition-delay: 60ms; }
+.reveal-delay-2 { transition-delay: 120ms; }
+.reveal-delay-3 { transition-delay: 180ms; }
+.reveal-delay-4 { transition-delay: 240ms; }
+
+/* Tactile feedback utility */
+.active-tap {
+  @apply transition-transform duration-200 active:scale-[0.96];
+}
 
 @keyframes fade-in-up {
   0% { transform: translateY(10px); opacity: 0; }

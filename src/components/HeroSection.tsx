@@ -61,6 +61,7 @@ export default function HeroSection() {
           className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
             index === current ? "opacity-100" : "opacity-0"
           }`}
+          style={{ transform: 'translate3d(0, 0, 0)' }}
         >
           <img
             src={slide.image}
@@ -68,7 +69,8 @@ export default function HeroSection() {
             className={`absolute inset-0 w-full h-full object-cover transform transition-transform duration-[6000ms] ease-linear ${
               index === current ? "scale-110" : "scale-100"
             }`}
-            style={{ filter: "brightness(0.4) contrast(1.1) saturate(1.1)" }}
+            style={{ filter: "brightness(0.4) contrast(1.1) saturate(1.1)", transform: 'translate3d(0, 0, 0)' }}
+            loading="eager"
           />
           {/* Vignette & Gradients for Each Slide */}
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.4)_50%,rgba(0,0,0,0.8)_100%)]" />
@@ -77,7 +79,10 @@ export default function HeroSection() {
       ))}
 
       {/* Persistent Fog & Noise Layers */}
-      <div className="absolute inset-0 fog-layer bg-gradient-to-r from-primary/5 via-transparent to-accent/5 pointer-events-none mix-blend-overlay opacity-50" />
+      <div 
+        className="absolute inset-0 fog-layer bg-gradient-to-r from-primary/5 via-transparent to-accent/5 pointer-events-none mix-blend-overlay opacity-50" 
+        style={{ transform: 'translate3d(0, 0, 0)', willChange: 'transform' }}
+      />
       
       {/* Content Overhead */}
       <div className="w-full h-16 sm:h-24 pointer-events-none" />
@@ -119,7 +124,7 @@ export default function HeroSection() {
         <div className="reveal flex flex-col sm:flex-row justify-center items-center gap-6 w-full sm:w-auto mt-4">
           <a
             href="#salas"
-            className="group relative overflow-hidden w-full sm:w-auto bg-primary text-primary-foreground font-bold px-10 py-4 rounded-xl text-base transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_30px_rgba(230,126,34,0.4)] active:scale-95"
+            className="group active-tap relative overflow-hidden w-full sm:w-auto bg-primary text-primary-foreground font-bold px-10 py-4 rounded-xl text-base transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_30px_rgba(230,126,34,0.4)]"
           >
             <span className="relative z-10 tracking-widest">
               RESERVAR AHORA

@@ -1,7 +1,8 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Clock, Users, ChevronLeft, ChevronRight, X, Trophy } from "lucide-react";
+import useEmblaCarousel from 'embla-carousel-react';
 import roomRefugio from "@/assets/room-refugio.jpg";
 import roomCopan from "@/assets/room-copan.jpg";
 import roomInculpados from "@/assets/room-inculpados.jpg";
@@ -242,8 +243,25 @@ function RoomCard({ room, delay, onClick }: { room: any; delay: number; onClick:
 // ─── Main Section ─────────────────────────────────────────────────────────────────
 
 export default function RoomsSection() {
-  const [current, setCurrent] = useState(0);
   const [selectedRoom, setSelectedRoom] = useState<any>(null);
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, skipSnaps: false });
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setSelectedIndex(emblaApi.selectedScrollSnap());
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    onSelect();
+    emblaApi.on('select', onSelect);
+    return () => { emblaApi.off('select', onSelect); };
+  }, [emblaApi, onSelect]);
+
+  const prev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
+  const next = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
+  const scrollTo = useCallback((index: number) => emblaApi?.scrollTo(index), [emblaApi]);
 
   const DEFAULT_ROOMS = [
     {
@@ -303,15 +321,6 @@ export default function RoomsSection() {
 
   const rooms = roomsData && roomsData.length > 0 ? roomsData : DEFAULT_ROOMS;
 
-  const prev = useCallback(() => {
-    if (!rooms) return;
-    setCurrent((c) => (c === 0 ? rooms.length - 1 : c - 1));
-  }, [rooms]);
-
-  const next = useCallback(() => {
-    if (!rooms) return;
-    setCurrent((c) => (c === rooms.length - 1 ? 0 : c + 1));
-  }, [rooms]);
 
   return (
     <section id="salas" className="py-24 md:py-32">
@@ -342,35 +351,44 @@ export default function RoomsSection() {
               ))}
             </div>
 
-            {/* Mobile carousel */}
+            {/* Mobile carousel with Embla */}
             <div className="md:hidden relative">
-              <div className="overflow-hidden">
-                <div
-                  className="flex transition-transform duration-500 ease-out"
-                  style={{ transform: `translateX(-${current * 100}%)` }}
-                >
+              <div className="overflow-hidden" ref={emblaRef}>
+                <div className="flex">
                   {rooms.map((room) => (
-                    <div key={room.name} className="w-full flex-shrink-0 px-2">
-                      <RoomCard room={room} delay={0} onClick={() => setSelectedRoom(room)} />
+                    <div key={room.name} className="flex-[0_0_100%] min-w-0 px-2 lg:px-4">
+                      <div className="active-tap">
+                        <RoomCard room={room} delay={0} onClick={() => setSelectedRoom(room)} />
+                      </div>
                     </div>
                   ))}
                 </div>
               </div>
+              
+              {/* Controls */}
               <div className="flex items-center justify-center gap-4 mt-8">
-                <button onClick={prev} className="w-12 h-12 rounded-full border border-border flex items-center justify-center text-foreground hover:bg-muted transition-colors bg-card shadow-sm">
+                <button 
+                  onClick={prev} 
+                  className="w-12 h-12 rounded-full border border-border flex items-center justify-center text-foreground transition-all bg-card active:scale-90 shadow-sm"
+                >
                   <ChevronLeft size={24} />
                 </button>
+                
                 <div className="flex gap-2.5">
                   {rooms.map((_, i) => (
                     <button
                       key={i}
-                      onClick={() => setCurrent(i)}
-                      className={`h-2 rounded-full transition-all duration-300 ${i === current ? "w-8 bg-primary shadow-[0_0_10px_rgba(230,126,34,0.5)]" : "w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50"}`}
+                      onClick={() => scrollTo(i)}
+                      className={`h-2 rounded-full transition-all duration-300 ${i === selectedIndex ? "w-8 bg-primary shadow-[0_0_10px_rgba(230,126,34,0.5)]" : "w-2 bg-muted-foreground/30"}`}
                       aria-label={`Ver sala ${i + 1}`}
                     />
                   ))}
                 </div>
-                <button onClick={next} className="w-12 h-12 rounded-full border border-border flex items-center justify-center text-foreground hover:bg-muted transition-colors bg-card shadow-sm">
+                
+                <button 
+                  onClick={next} 
+                  className="w-12 h-12 rounded-full border border-border flex items-center justify-center text-foreground transition-all bg-card active:scale-90 shadow-sm"
+                >
                   <ChevronRight size={24} />
                 </button>
               </div>
