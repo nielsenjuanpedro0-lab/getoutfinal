@@ -43,31 +43,13 @@ export default function ContactSection() {
   const room = useMemo(() => rooms.find((r) => r.id === selectedRoom), [rooms, selectedRoom]);
   const roomColor = room?.accent_color || "hsl(var(--primary))";
 
+  // Fast animation settings
+  const fastTransition = { duration: 0.3, ease: [0.23, 1, 0.32, 1] };
+
   const DEFAULT_ROOMS: Room[] = [
-    {
-      id: "fallback-1",
-      name: "Ruinas de Copán",
-      players: "2 a 6",
-      accent_color: "#f0a500",
-      image_url: null,
-      price: 15000
-    },
-    {
-      id: "fallback-2",
-      name: "Inculpados",
-      players: "2 a 6",
-      accent_color: "#4A90D9",
-      image_url: null,
-      price: 15000
-    },
-    {
-      id: "fallback-3",
-      name: "El Refugio",
-      players: "2 a 8",
-      accent_color: "#27AE60",
-      image_url: null,
-      price: 15000
-    }
+    { id: "fallback-1", name: "Ruinas de Copán", players: "2 a 6", accent_color: "#f0a500", image_url: null, price: 15000 },
+    { id: "fallback-2", name: "Inculpados", players: "2 a 6", accent_color: "#4A90D9", image_url: null, price: 15000 },
+    { id: "fallback-3", name: "El Refugio", players: "2 a 8", accent_color: "#27AE60", image_url: null, price: 15000 }
   ];
 
   useEffect(() => {
@@ -121,27 +103,17 @@ export default function ContactSection() {
 
   const createMPPreference = async (bookingId: string, roomName: string, price: number) => {
     try {
-      // Calling the new Vercel Serverless Function to avoid CORS
       const response = await fetch('/api/mercadopago', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ bookingId, roomName, price }),
       });
-
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Failed to create preference');
       return data.init_point;
     } catch (err) {
       console.error("Error creating MP preference:", err);
-      // Fallback to Edge Function if Vercel API is not ready (unlikely but safe)
-      try {
-        const { data } = await supabase.functions.invoke('mercadopago', {
-          body: { bookingId, roomName, price },
-        });
-        return data?.init_point;
-      } catch {
-        return null;
-      }
+      return null;
     }
   };
 
@@ -186,57 +158,59 @@ export default function ContactSection() {
   };
 
   return (
-    <section id="reservar" className="relative py-12 md:py-32 overflow-hidden px-4">
-      {/* Background Polish */}
+    <section id="reservar" className="relative py-12 md:py-24 overflow-hidden px-4">
+      {/* Background Polish - Simplified for performance */}
       <div 
-        className="absolute inset-0 opacity-[0.05] pointer-events-none transition-colors duration-1000 blur-[150px]"
+        className="absolute inset-x-0 -top-20 bottom-0 opacity-[0.03] pointer-events-none transition-colors duration-500 blur-[100px]"
         style={{ backgroundColor: roomColor }}
       />
 
-      <div className="container max-w-4xl relative z-10 px-0">
+      <div className="container max-w-3xl relative z-10 px-0">
         <motion.div 
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.4 }}
           viewport={{ once: true }}
-          className="text-center mb-12"
+          className="text-center mb-8 md:mb-12"
         >
-          <h2 className="font-display text-4xl sm:text-7xl text-white mb-4">
+          <h2 className="font-display text-4xl sm:text-7xl text-white mb-2">
             Reservá tu <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">misión</span>
           </h2>
-          <div className="h-1 w-20 bg-primary mx-auto rounded-full" style={{ backgroundColor: roomColor }} />
+          <div className="h-1 w-16 bg-primary mx-auto rounded-full" style={{ backgroundColor: roomColor }} />
         </motion.div>
 
-        {/* Liquid Step Transitions */}
+        {/* Liquid Step Transitions - High Speed */}
         <AnimatePresence mode="wait">
           {step === "room" && (
             <motion.div
               key="step-room"
-              initial={{ opacity: 0, scale: 0.95 }}
+              initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, x: -50 }}
-              className="grid grid-cols-1 md:grid-cols-3 gap-6"
+              exit={{ opacity: 0, x: -20 }}
+              transition={fastTransition}
+              className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6"
             >
               {rooms.map((r) => (
-                <button
+                <motion.button
                   key={r.id}
+                  whileTap={{ scale: 0.96 }}
                   onClick={() => { setSelectedRoom(r.id); setStep("datetime"); }}
-                  className="group relative h-48 sm:h-80 rounded-3xl overflow-hidden border border-white/10 transition-all hover:border-white/30"
+                  className="group relative h-40 sm:h-72 rounded-2xl overflow-hidden border border-white/5 bg-zinc-950 transition-colors hover:border-white/20"
                 >
-                  <img src={getRoomImage(r)} alt={r.name} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-40" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
-                  <div className="absolute bottom-6 left-6 text-left">
-                    <h4 className="font-display text-3xl text-white drop-shadow-lg">{r.name}</h4>
-                    <p className="text-white/60 text-xs font-bold uppercase tracking-widest">{r.players} jugadores</p>
+                  <img src={getRoomImage(r)} alt={r.name} className="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:opacity-50 transition-opacity duration-300" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/10 to-transparent" />
+                  <div className="absolute bottom-4 left-4 text-left">
+                    <h4 className="font-display text-2xl text-white">{r.name}</h4>
+                    <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest">{r.players} jugadores</p>
                   </div>
-                  <div className="absolute top-4 right-4 bg-white/10 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold text-white opacity-0 group-hover:opacity-100 transition-opacity">
-                    SELECCIONAR
+                  <div className="absolute top-3 right-3 bg-white/5 backdrop-blur-sm px-2 py-0.5 rounded-full text-[9px] font-bold text-white opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-tighter">
+                    Elegir
                   </div>
-                </button>
+                </motion.button>
               ))}
-              <div className="md:col-span-3 text-center mt-4">
-                 <a href="https://wa.me/5492262314212" target="_blank" className="text-zinc-500 hover:text-white transition-colors text-sm flex items-center justify-center gap-2">
-                    <MessageCircle className="w-4 h-4 text-green-500" /> ¿Tenés dudas? Escribinos por WhatsApp
+              <div className="md:col-span-3 text-center opacity-60 hover:opacity-100 transition-opacity">
+                 <a href="https://wa.me/5492262314212" target="_blank" className="text-zinc-500 hover:text-white text-xs flex items-center justify-center gap-2">
+                    <MessageCircle className="w-3.5 h-3.5 text-green-500" /> ¿Dudas? WhatsApp
                  </a>
               </div>
             </motion.div>
@@ -245,61 +219,63 @@ export default function ContactSection() {
           {step === "datetime" && (
             <motion.div
               key="step-datetime"
-              initial={{ opacity: 0, x: 50 }}
+              initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -50 }}
-              className="max-w-3xl mx-auto bg-zinc-950/50 backdrop-blur-xl border border-white/10 rounded-[2.5rem] p-6 md:p-10 shadow-2xl"
+              exit={{ opacity: 0, x: -20 }}
+              transition={fastTransition}
+              className="max-w-2xl mx-auto bg-zinc-950/40 backdrop-blur-lg border border-white/10 rounded-[2rem] p-5 md:p-8"
             >
               <button 
                 onClick={() => setStep("room")}
-                className="mb-8 flex items-center gap-2 text-zinc-500 hover:text-white transition-colors text-sm font-bold uppercase tracking-widest"
+                className="mb-6 flex items-center gap-1.5 text-zinc-500 hover:text-white transition-colors text-[10px] font-black uppercase tracking-widest"
               >
-                <ChevronLeft className="w-4 h-4" /> Cambiar sala
+                <ChevronLeft className="w-3.5 h-3.5" /> Volver
               </button>
 
-              <div className="grid md:grid-cols-2 gap-10">
-                <div className="space-y-6">
-                  <h3 className="font-display text-3xl text-white">Elegir Fecha</h3>
-                  <div className="p-4 bg-black/40 border border-white/5 rounded-2xl">
+              <div className="grid md:grid-cols-2 gap-8 md:gap-10">
+                <div className="space-y-4">
+                  <h3 className="font-display text-2xl text-white">1. Fecha</h3>
+                  <div className="p-2 sm:p-3 bg-black/40 border border-white/5 rounded-xl">
                     <Calendar 
                       mode="single" selected={selectedDate} onSelect={(d) => { setSelectedDate(d); setSelectedTime(""); }}
                       disabled={disableDate} locale={es}
-                      className="rounded-xl"
+                      className="rounded-xl scale-[0.9] sm:scale-100 origin-top"
                     />
                   </div>
-                  <p className="text-yellow-500/80 text-[10px] font-bold uppercase italic">* Solo fines de semana</p>
                 </div>
 
-                <div className="space-y-6">
-                  <h3 className="font-display text-3xl text-white">Horario</h3>
+                <div className="space-y-4 flex flex-col">
+                  <h3 className="font-display text-2xl text-white">2. Horario</h3>
                   {!selectedDate ? (
-                     <div className="h-48 border border-white/5 border-dashed rounded-2xl flex flex-center items-center justify-center text-zinc-600 text-sm italic">
-                        Seleccioná un día primero
+                     <div className="flex-1 flex items-center justify-center border border-white/5 border-dashed rounded-xl p-8 text-zinc-700 text-xs italic text-center">
+                        Seleccioná un día
                      </div>
                   ) : loadingSlots ? (
-                    <div className="h-48 flex items-center justify-center"><Loader2 className="animate-spin" /></div>
+                    <div className="flex-1 flex items-center justify-center"><Loader2 className="animate-spin text-zinc-600" /></div>
                   ) : (
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-2 gap-2.5">
                       {availableSlots.length > 0 ? availableSlots.map(s => (
-                        <button
+                        <motion.button
                           key={s}
-                          onClick={() => { setSelectedTime(s); setTimeout(() => setStep("details"), 300); }}
-                          className={`py-4 rounded-xl font-black text-xl transition-all ${selectedTime === s ? 'bg-primary text-white shadow-lg' : 'bg-white/5 text-white/40 hover:bg-white/10'}`}
+                          whileTap={{ scale: 0.95 }}
+                          onClick={() => { setSelectedTime(s); setTimeout(() => setStep("details"), 200); }}
+                          className={`py-3.5 rounded-xl font-black text-lg transition-all ${selectedTime === s ? 'text-white shadow-lg' : 'bg-white/5 text-white/30'}`}
                           style={selectedTime === s ? { backgroundColor: roomColor } : {}}
                         >
                           {s}
-                        </button>
-                      )) : <p className="col-span-2 text-zinc-600 italic">No hay turnos disponibles hoy</p>}
+                        </motion.button>
+                      )) : <p className="col-span-2 text-zinc-600 text-[10px] italic text-center mt-8">Sin turnos disponibles</p>}
                     </div>
                   )}
                   {selectedTime && (
-                    <button 
+                    <motion.button 
+                      whileTap={{ scale: 0.98 }}
                       onClick={() => setStep("details")}
-                      className="w-full py-5 rounded-2xl text-white font-black text-lg shadow-xl shadow-primary/20 hover:brightness-110 transition-all"
+                      className="mt-6 w-full py-4 rounded-xl text-white font-black text-sm uppercase tracking-widest shadow-xl brightness-110 active:brightness-90 transition-all"
                       style={{ backgroundColor: roomColor }}
                     >
-                      CONTINUAR <ArrowRight className="inline ml-2 w-5 h-5" />
-                    </button>
+                      Continuar <ArrowRight className="inline ml-1.5 w-4 h-4" />
+                    </motion.button>
                   )}
                 </div>
               </div>
@@ -309,95 +285,95 @@ export default function ContactSection() {
           {step === "details" && (
             <motion.div
               key="step-details"
-              initial={{ opacity: 0, x: 50 }}
+              initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, opacity: 0 }}
-              className="max-w-2xl mx-auto bg-zinc-950/50 backdrop-blur-xl border border-white/10 rounded-[2.5rem] p-8 md:p-12 shadow-2xl"
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={fastTransition}
+              className="max-w-xl mx-auto bg-zinc-950/40 backdrop-blur-lg border border-white/10 rounded-[2rem] p-6 md:p-8"
             >
               <button 
                 onClick={() => setStep("datetime")}
-                className="mb-8 flex items-center gap-2 text-zinc-500 hover:text-white transition-colors text-sm font-bold uppercase tracking-widest"
+                className="mb-6 flex items-center gap-1.5 text-zinc-500 hover:text-white transition-colors text-[10px] font-black uppercase tracking-widest"
               >
-                <ChevronLeft className="w-4 h-4" /> Ver otros horarios
+                <ChevronLeft className="w-3.5 h-3.5" /> Otro horario
               </button>
 
-              <div className="mb-10 flex items-center justify-between">
+              <div className="mb-8 flex items-center justify-between">
                 <div>
-                  <h3 className="font-display text-4xl text-white uppercase">{room?.name}</h3>
-                  <p className="text-zinc-500 font-bold uppercase tracking-tighter text-sm mt-1">
+                  <h3 className="font-display text-3xl text-white uppercase leading-none">{room?.name}</h3>
+                  <p className="text-zinc-500 font-bold uppercase tracking-tight text-[10px] mt-1.5 opacity-70">
                     {format(selectedDate!, "EEEE d 'de' MMMM", { locale: es })} · {selectedTime} HS
                   </p>
                 </div>
-                <div className="h-12 w-12 rounded-full border border-white/10 flex items-center justify-center text-primary" style={{ color: roomColor }}>
-                  <ShieldCheck className="w-6 h-6" />
+                <div className="h-10 w-10 rounded-full border border-white/5 flex items-center justify-center" style={{ color: roomColor }}>
+                  <ShieldCheck className="w-5 h-5" />
                 </div>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                   <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase text-zinc-500 tracking-widest">Nombre del Capitán</label>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                   <div className="space-y-1.5">
+                      <label className="text-[9px] font-black uppercase text-zinc-600 tracking-widest ml-1">Capitán</label>
                       <input 
                         type="text" required value={formData.nombre}
                         onChange={e => setFormData({...formData, nombre: e.target.value})}
-                        className="w-full bg-black/40 border border-white/5 rounded-2xl px-5 py-4 text-white focus:outline-none focus:ring-1 transition-all"
-                        style={{'--tw-ring-color': roomColor} as any}
-                        placeholder="Ej: Juan Pérez"
+                        className="w-full bg-black/40 border border-white/5 rounded-xl px-4 py-3.5 text-white text-sm focus:outline-none focus:border-white/20 transition-all placeholder:text-zinc-800"
+                        placeholder="Tu nombre"
                       />
                    </div>
-                   <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase text-zinc-500 tracking-widest">WhatsApp de contacto</label>
+                   <div className="space-y-1.5">
+                      <label className="text-[9px] font-black uppercase text-zinc-600 tracking-widest ml-1">WhatsApp</label>
                       <input 
                         type="tel" required value={formData.whatsapp}
                         onChange={e => setFormData({...formData, whatsapp: e.target.value})}
-                        className="w-full bg-black/40 border border-white/5 rounded-2xl px-5 py-4 text-white focus:outline-none focus:ring-1 transition-all"
-                        style={{'--tw-ring-color': roomColor} as any}
-                        placeholder="2262 123456"
+                        className="w-full bg-black/40 border border-white/5 rounded-xl px-4 py-3.5 text-white text-sm focus:outline-none focus:border-white/20 transition-all placeholder:text-zinc-800"
+                        placeholder="2262 ..."
                       />
                    </div>
                 </div>
 
-                <div className="p-6 rounded-3xl bg-white/5 border border-white/5 shadow-inner">
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-zinc-400 font-bold text-xs uppercase tracking-widest">Reserva y Seña</span>
-                    <span className="text-3xl font-black text-white" style={{ textShadow: `0 0 30px ${roomColor}60` }}>${(room?.price || 15000).toLocaleString('es-AR')}</span>
+                <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/5">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-zinc-500 font-bold text-[10px] uppercase tracking-widest">Valor de seña</span>
+                    <span className="text-2xl font-black text-white" style={{ textShadow: `0 0 20px ${roomColor}40` }}>${(room?.price || 15000).toLocaleString('es-AR')}</span>
                   </div>
-                  <ul className="space-y-2 text-[11px] text-zinc-500 font-medium">
-                    <li className="flex items-center gap-2 text-green-500/80"><CheckCircle className="w-3 h-3" /> Turno asegurado al abonar</li>
-                    <li className="flex items-center gap-2"><MapPin className="w-3 h-3" /> El restando se abona en efectivo en el local</li>
-                  </ul>
+                  <div className="flex items-center gap-2 text-[10px] text-zinc-600 font-semibold italic">
+                    <CheckCircle className="w-3 h-3 text-green-500/50" /> El resto se abona en el local
+                  </div>
                 </div>
 
-                <button
+                <motion.button
                   type="submit" disabled={loading}
-                  className="w-full py-6 rounded-[2rem] text-white font-black text-xl relative overflow-hidden group shadow-2xl transition-transform active:scale-95"
-                  style={{ backgroundColor: roomColor, boxShadow: `0 20px 50px -15px ${roomColor}80` }}
+                  whileTap={{ scale: 0.97 }}
+                  className="w-full py-5 rounded-2xl text-white font-black text-base shadow-2xl brightness-110 flex flex-col items-center justify-center gap-0.5"
+                  style={{ backgroundColor: roomColor, boxShadow: `0 15px 30px -10px ${roomColor}60` }}
                 >
-                  <span className="relative z-10 flex items-center justify-center gap-2">
-                    {loading ? <Loader2 className="animate-spin" /> : <><Wallet className="w-6 h-6" /> PAGAR SEÑA AHORA</>}
-                  </span>
-                  <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                </button>
+                  {loading ? <Loader2 className="animate-spin" /> : (
+                    <>
+                      <span className="flex items-center gap-2"><Wallet className="w-5 h-5" /> PAGAR SEÑA</span>
+                      <span className="text-[9px] opacity-50 uppercase tracking-[0.15em] font-normal">Vía Mercado Pago</span>
+                    </>
+                  )}
+                </motion.button>
               </form>
             </motion.div>
           )}
 
           {step === "success" && (
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="max-w-xl mx-auto text-center space-y-8 py-20"
+              transition={fastTransition}
+              className="max-w-md mx-auto text-center space-y-6 py-16"
             >
-              <div className="w-24 h-24 rounded-full border-2 border-green-500 mx-auto flex items-center justify-center">
-                 <CheckCircle className="w-12 h-12 text-green-500" />
-              </div>
-              <h3 className="font-display text-6xl text-white uppercase">RESERVA LISTA</h3>
-              <p className="text-zinc-400">Te redirigimos al pago o contactaremos pronto.</p>
+              <CheckCircle className="w-16 h-16 text-green-500 mx-auto" />
+              <h3 className="font-display text-4xl text-white uppercase">RESERVA LISTA</h3>
+              <p className="text-zinc-500 text-sm">Aguardá unos segundos...</p>
               <button 
                 onClick={resetForm}
-                className="bg-white/5 border border-white/10 hover:border-white/30 px-10 py-4 rounded-xl text-zinc-300 transition-all"
+                className="bg-white/5 border border-white/10 px-8 py-3 rounded-xl text-zinc-400 text-xs transition-all"
               >
-                Volver al inicio
+                Volver
               </button>
             </motion.div>
           )}
