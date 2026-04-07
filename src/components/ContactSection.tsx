@@ -44,7 +44,7 @@ export default function ContactSection() {
   const roomColor = room?.accent_color || "hsl(var(--primary))";
 
   // Fast animation settings
-  const fastTransition = { duration: 0.3, ease: [0.23, 1, 0.32, 1] };
+  const fastTransition: any = { duration: 0.3, ease: [0.23, 1, 0.32, 1] };
 
   const DEFAULT_ROOMS: Room[] = [
     { id: "fallback-1", name: "Ruinas de Copán", players: "2 a 6", accent_color: "#f0a500", image_url: null, price: 15000 },
@@ -140,7 +140,7 @@ export default function ContactSection() {
       return;
     }
 
-    const paymentUrl = await createMPPreference(bookingData.id, room?.name || "Sala de Escape", room?.price || 15000);
+    const paymentUrl = await createMPPreference(bookingData.id, room?.name || "Sala de Escape", 15000);
     if (paymentUrl) {
       window.location.href = paymentUrl;
     } else {
@@ -335,7 +335,7 @@ export default function ContactSection() {
                 <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/5">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-zinc-500 font-bold text-[10px] uppercase tracking-widest">Valor de seña</span>
-                    <span className="text-2xl font-black text-white" style={{ textShadow: `0 0 20px ${roomColor}40` }}>${(room?.price || 15000).toLocaleString('es-AR')}</span>
+                    <span className="text-2xl font-black text-white" style={{ textShadow: `0 0 20px ${roomColor}40` }}>$15.000</span>
                   </div>
                   <div className="flex items-center gap-2 text-[10px] text-zinc-600 font-semibold italic">
                     <CheckCircle className="w-3 h-3 text-green-500/50" /> El resto se abona en el local
