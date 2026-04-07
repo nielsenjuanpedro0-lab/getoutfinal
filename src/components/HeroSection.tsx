@@ -12,20 +12,23 @@ const slides = [
     title: "RUINAS DE COPÁN",
     subtitle: "Puesto N°3 en el Ranking Provincial",
     color: "#f0a500",
-    position: "center 40%" // Higher percentage moves the image subjects UP (showing more bottom)
+    position: "center 40%", // Higher percentage moves the image subjects UP (showing more bottom)
+    centerText: true
   },
   {
     image: heroInculpados,
     title: "INCULPADOS",
     subtitle: "Puesto N°2 en el Ranking Provincial",
     color: "#4A90D9",
-    position: "center 70%"
+    position: "center 70%",
+    centerText: true
   },
   {
     image: heroRefugio,
     title: "EL REFUGIO",
     subtitle: "Puesto N°4 en el Ranking Provincial",
-    color: "#27AE60"
+    color: "#27AE60",
+    centerText: true
   },
   {
     image: heroBirthday,
