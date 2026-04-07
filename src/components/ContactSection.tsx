@@ -11,14 +11,21 @@ import roomInculpados from "@/assets/room-inculpados.jpg";
 
 
 // Mercado Pago Integration
-const MP_ACCESS_TOKEN = import.meta.env.VITE_MP_ACCESS_TOKEN;
 const API_MP_PREFERENCES = "https://api.mercadopago.com/checkout/preferences";
 
 type Room = { id: string; name: string; players: string | null; accent_color: string | null; image_url: string | null; price?: number | null };
 type Step = "room" | "datetime" | "details" | "success";
 
 const getRoomImage = (room: any) => {
-  if (room.image_url && room.image_url !== '/placeholder.svg' && room.image_url !== '') return room.image_url;
+  // If the database has a real image, use it. But skip if it's a placeholder.
+  const hasRealImage = room.image_url && 
+                       !room.image_url.includes('placeholder') && 
+                       room.image_url !== '' && 
+                       room.image_url !== '/placeholder.svg';
+
+  if (hasRealImage) return room.image_url;
+
+  // Fallback to local assets based on room name
   const name = room.name?.toLowerCase() || '';
   if (name.includes('refugio')) return roomRefugio;
   if (name.includes('copan')) return roomCopan;
@@ -141,36 +148,18 @@ export default function ContactSection() {
 
   const createMPPreference = async (bookingId: string, roomName: string, price: number) => {
     try {
-      const response = await fetch(API_MP_PREFERENCES, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${MP_ACCESS_TOKEN}`,
-          'Content-Type': 'application/json',
+      const { data, error } = await supabase.functions.invoke('mercadopago', {
+        body: {
+          bookingId,
+          roomName,
+          price: price || 15000,
         },
-        body: JSON.stringify({
-          items: [
-            {
-              title: `Seña - ${roomName}`,
-              description: `Reserva para la sala ${roomName}`,
-              quantity: 1,
-              currency_id: 'ARS',
-              unit_price: price || 15000,
-            }
-          ],
-          external_reference: bookingId,
-          back_urls: {
-            success: window.location.origin + "/?status=success",
-            failure: window.location.origin + "/?status=failure",
-            pending: window.location.origin + "/?status=pending",
-          },
-          auto_return: 'approved',
-        }),
       });
 
-      const data = await response.json();
+      if (error) throw error;
       return data.init_point;
     } catch (err) {
-      console.error("Error creating MP preference:", err);
+      console.error("Error creating MP preference via Edge Function:", err);
       return null;
     }
   };

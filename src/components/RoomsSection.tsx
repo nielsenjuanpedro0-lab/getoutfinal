@@ -9,6 +9,14 @@ import roomInculpados from "@/assets/room-inculpados.jpg";
 import logoEscMap from "@/assets/logo-escapemap.jpg";
 
 const getRoomImage = (room: any) => {
+  // If the database has a real image, use it. But skip if it's a placeholder.
+  const hasRealImage = room.image_url && 
+                       !room.image_url.includes('placeholder') && 
+                       room.image_url !== '' && 
+                       room.image_url !== '/placeholder.svg';
+
+  if (hasRealImage) return room.image_url;
+
   const name = room.name?.toLowerCase() || '';
   if (name.includes('refugio')) return roomRefugio;
   if (name.includes('copan')) return roomCopan;
