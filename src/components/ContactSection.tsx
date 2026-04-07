@@ -6,12 +6,13 @@ import { format, isBefore, startOfDay, getDay } from "date-fns";
 import { es } from "date-fns/locale";
 import { Calendar } from "@/components/ui/calendar";
 import roomRefugio from "@/assets/room-refugio.jpg";
-import roomCopan from "@/assets/room-copan.jpg";
+import roomCopan from "@/assets/room-copan.png";
 import roomInculpados from "@/assets/room-inculpados.jpg";
 
-// ⚠️ Reemplazá esta URL por tu link de cobro de Mercado Pago:
-// Crealo en: mercadopago.com.ar → Cobrar → Crear link de cobro → $15.000
-const MP_PAYMENT_URL = "https://mpago.la/XXXXXXXXX";
+
+// Mercado Pago Integration
+const MP_ACCESS_TOKEN = import.meta.env.VITE_MP_ACCESS_TOKEN;
+const API_MP_PREFERENCES = "https://api.mercadopago.com/checkout/preferences";
 
 type Room = { id: string; name: string; players: string | null; accent_color: string | null; image_url: string | null; price?: number | null };
 type Step = "room" | "datetime" | "details" | "success";
@@ -138,12 +139,48 @@ export default function ContactSection() {
     return day !== 0 && day !== 6;
   };
 
+  const createMPPreference = async (bookingId: string, roomName: string, price: number) => {
+    try {
+      const response = await fetch(API_MP_PREFERENCES, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${MP_ACCESS_TOKEN}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          items: [
+            {
+              title: `Seña - ${roomName}`,
+              description: `Reserva para la sala ${roomName}`,
+              quantity: 1,
+              currency_id: 'ARS',
+              unit_price: price || 15000,
+            }
+          ],
+          external_reference: bookingId,
+          back_urls: {
+            success: window.location.origin + "/?status=success",
+            failure: window.location.origin + "/?status=failure",
+            pending: window.location.origin + "/?status=pending",
+          },
+          auto_return: 'approved',
+        }),
+      });
+
+      const data = await response.json();
+      return data.init_point;
+    } catch (err) {
+      console.error("Error creating MP preference:", err);
+      return null;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedRoom || !selectedDate || !selectedTime) return;
     setLoading(true);
 
-    const { error } = await supabase.from("bookings").insert({
+    const { data: bookingData, error } = await supabase.from("bookings").insert({
       customer_name: formData.nombre,
       customer_phone: formData.whatsapp,
       customer_email: formData.email || null,
@@ -154,16 +191,24 @@ export default function ContactSection() {
       notes: null,
       status: "pending",
       payment_status: "unpaid",
-    });
+    }).select().single();
 
-    if (error) {
+    if (error || !bookingData) {
       toast.error("Error al procesar la reserva. Intentá de nuevo.");
       setLoading(false);
       return;
     }
 
-    // Redirect to Mercado Pago payment link
-    window.location.href = MP_PAYMENT_URL;
+    // Create Mercado Pago Preference
+    const roomPrice = room?.price || 15000;
+    const paymentUrl = await createMPPreference(bookingData.id, room?.name || "Sala de Escape", roomPrice);
+
+    if (paymentUrl) {
+      window.location.href = paymentUrl;
+    } else {
+      toast.error("Error al generar el link de pago. Por favor contactanos.");
+      setLoading(false);
+    }
   };
 
   const resetForm = () => {
@@ -474,7 +519,7 @@ export default function ContactSection() {
                   <div className="flex items-center justify-between text-base">
                     <span className="text-zinc-400 font-bold tracking-widest uppercase text-xs">Valor de la seña</span>
                     <span className="text-white font-black text-3xl" style={{textShadow: `0 0 30px ${roomColor}80`}}>
-                      $15.000
+                      ${(room?.price || 15000).toLocaleString('es-AR')}
                     </span>
                   </div>
                   

@@ -1,3 +1,6 @@
+import { useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+import { toast } from "sonner";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
@@ -16,6 +19,25 @@ import WhatsAppButton from "@/components/WhatsAppButton";
 
 const Index = () => {
   useScrollReveal();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    const status = searchParams.get("status");
+    if (status === "success") {
+      toast.success("¡Pago acreditado! Tu reserva está confirmada.", {
+        description: "Te enviaremos un WhatsApp con los detalles.",
+        duration: 8000,
+      });
+      // Limpiar el parámetro de la URL
+      setSearchParams({}, { replace: true });
+    } else if (status === "failure") {
+      toast.error("Hubo un problema con el pago.", {
+        description: "Si el dinero se debitó, contactanos por WhatsApp.",
+        duration: 8000,
+      });
+      setSearchParams({}, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   return (
     <div className="min-h-screen bg-background">

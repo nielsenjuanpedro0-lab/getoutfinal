@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Clock, Users, ChevronLeft, ChevronRight, X, Trophy } from "lucide-react";
 import useEmblaCarousel from 'embla-carousel-react';
 import roomRefugio from "@/assets/room-refugio.jpg";
-import roomCopan from "@/assets/room-copan.jpg";
+import roomCopan from "@/assets/room-copan.png";
 import roomInculpados from "@/assets/room-inculpados.jpg";
 import logoEscMap from "@/assets/logo-escapemap.jpg";
 
