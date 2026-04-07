@@ -266,7 +266,7 @@ export default function ContactSection() {
             {/* WhatsApp button for pre-questions */}
             <div className="text-center mt-10">
               <a
-                href="https://wa.me/5492262000000?text=Hola!%20Tengo%20algunas%20preguntas%20antes%20de%20reservar"
+                href="https://wa.me/5492262314212?text=Hola!%20Tengo%20algunas%20preguntas%20antes%20de%20reservar"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 border border-white/20 text-zinc-300 font-medium px-6 py-3 rounded-xl hover:border-white/50 hover:text-white transition-all duration-200"

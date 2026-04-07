@@ -39,7 +39,7 @@ export default function ServicesSection() {
                 {service.description}
               </p>
               <a
-                href="https://wa.me/5492262000000"
+                href="https://wa.me/5492262314212"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-block bg-primary text-primary-foreground font-bold text-sm px-6 py-3 rounded-md hover:brightness-110 active:scale-[0.97] transition-all duration-200"

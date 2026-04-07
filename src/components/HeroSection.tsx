@@ -11,13 +11,15 @@ const slides = [
     image: heroCopan,
     title: "RUINAS DE COPÁN",
     subtitle: "Puesto N°3 en el Ranking Provincial",
-    color: "#f0a500"
+    color: "#f0a500",
+    position: "center 40%" // Higher percentage moves the image subjects UP (showing more bottom)
   },
   {
     image: heroInculpados,
     title: "INCULPADOS",
     subtitle: "Puesto N°2 en el Ranking Provincial",
-    color: "#4A90D9"
+    color: "#4A90D9",
+    position: "center 70%"
   },
   {
     image: heroRefugio,
@@ -29,7 +31,8 @@ const slides = [
     image: heroBirthday,
     title: "¡FESTEJÁ TU CUMPLE!",
     subtitle: "Una experiencia diferente para tu evento",
-    color: "#E67E22"
+    color: "#E67E22",
+    centerText: true // Special flag for birthday slide
   }
 ];
 
@@ -69,7 +72,11 @@ export default function HeroSection() {
             className={`absolute inset-0 w-full h-full object-cover transform transition-transform duration-[6000ms] ease-linear ${
               index === current ? "scale-110" : "scale-100"
             }`}
-            style={{ filter: "brightness(0.4) contrast(1.1) saturate(1.1)", transform: 'translate3d(0, 0, 0)' }}
+            style={{ 
+              filter: "brightness(0.5) contrast(1.1) saturate(1.1)", 
+              transform: 'translate3d(0, 0, 0)',
+              objectPosition: slide.position || 'center'
+            }}
             loading="eager"
           />
           {/* Vignette & Gradients for Each Slide */}
@@ -87,18 +94,18 @@ export default function HeroSection() {
       {/* Content Overhead */}
       <div className="w-full h-16 sm:h-24 pointer-events-none" />
       
-      <div className="relative z-10 text-center px-4 max-w-5xl mx-auto flex flex-col items-center my-auto py-12">
+      <div className={`relative z-10 w-full px-4 max-w-7xl mx-auto flex flex-col justify-center my-auto py-12 transition-all duration-700 ${slides[current].centerText ? 'items-center text-center' : 'items-start text-left'}`}>
         {/* Logo */}
-        <div className="reveal mb-6 md:mb-8 transition-all duration-700 transform hover:scale-105">
+        <div className={`reveal mb-6 md:mb-8 transition-all duration-700 transform hover:scale-105 ${slides[current].centerText ? 'mx-auto' : ''}`}>
           <img
             src={logo}
             alt="GetOut!"
-            className="w-14 h-14 md:w-18 md:h-18 object-contain drop-shadow-[0_0_20px_rgba(230,126,34,0.4)]"
+            className="w-14 h-14 md:w-20 md:h-20 object-contain drop-shadow-[0_0_20px_rgba(230,126,34,0.4)]"
           />
         </div>
 
         {/* Dynamic Slide Content */}
-        <div className="min-h-[140px] md:min-h-[180px] flex flex-col items-center justify-center">
+        <div className={`min-h-[140px] md:min-h-[180px] flex flex-col ${slides[current].centerText ? 'items-center justify-center' : 'items-start justify-center'}`}>
           <div 
             key={`badge-${current}`}
             className="reveal inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 backdrop-blur-md mb-4 animate-fade-in-down"
@@ -111,25 +118,25 @@ export default function HeroSection() {
           
           <h1 
             key={`title-${current}`}
-            className="reveal font-display text-4xl sm:text-6xl md:text-7xl leading-[1.1] text-white mb-6 drop-shadow-2xl font-bold tracking-tight animate-fade-in-up max-w-3xl mx-auto"
+            className={`reveal font-display text-4xl sm:text-6xl md:text-8xl leading-[1.1] text-white mb-6 drop-shadow-2xl font-bold tracking-tight animate-fade-in-up max-w-4xl ${slides[current].centerText ? 'mx-auto' : ''}`}
           >
             {slides[current].title.split(" ").map((word, i) => (
-              <span key={i} className={`inline-block mx-1 ${i === slides[current].title.split(" ").length - 1 ? 'text-primary' : ''}`} style={i === slides[current].title.split(" ").length - 1 ? { textShadow: "0 0 30px rgba(230,126,34,0.4)" } : {}}>
+              <span key={i} className={`inline-block mr-3 ${i === slides[current].title.split(" ").length - 1 ? 'text-primary' : ''}`} style={i === slides[current].title.split(" ").length - 1 ? { textShadow: "0 0 30px rgba(230,126,34,0.4)" } : {}}>
                 {word}
               </span>
             ))}
           </h1>
         </div>
         
-        <div className="reveal flex flex-col sm:flex-row justify-center items-center gap-6 w-full sm:w-auto mt-4">
+        <div className={`reveal flex flex-col sm:flex-row gap-6 w-full sm:w-auto mt-4 ${slides[current].centerText ? 'justify-center items-center' : ''}`}>
           <a
             href="#salas"
-            className="group active-tap relative overflow-hidden w-full sm:w-auto bg-primary text-primary-foreground font-bold px-10 py-4 rounded-xl text-base transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_30px_rgba(230,126,34,0.4)]"
+            className="group active-tap relative overflow-hidden w-full sm:w-auto bg-primary text-primary-foreground font-bold px-10 py-5 rounded-xl text-base transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_40px_rgba(230,126,34,0.6)]"
           >
-            <span className="relative z-10 tracking-widest">
+            <span className="relative z-10 tracking-widest uppercase font-black">
               RESERVAR AHORA
             </span>
-            <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+            <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/30 to-transparent" />
           </a>
         </div>
       </div>

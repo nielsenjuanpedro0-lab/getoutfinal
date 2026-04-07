@@ -11,8 +11,8 @@ const contacts = [
     icon: MessageCircle,
     color: "#25D366",
     label: "WhatsApp",
-    value: "+54 9 2262 000000",
-    href: "https://wa.me/5492262000000?text=Hola!%20Quiero%20hacer%20una%20consulta",
+    value: "+54 9 2262 314212",
+    href: "https://wa.me/5492262314212?text=Hola!%20Quiero%20hacer%20una%20consulta",
   },
   {
     id: "instagram",
@@ -40,7 +40,7 @@ export default function ContactInfoSection() {
           Contacto
         </h2>
         <p className="reveal text-center text-muted-foreground mb-16 text-lg">
-          Estamos en Necochea. Abrimos sábados, domingos y feriados.
+          Estamos en Necochea. ¡Descubrinos!
         </p>
 
         <div className="grid lg:grid-cols-2 gap-10 items-start max-w-6xl mx-auto">

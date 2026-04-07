@@ -28,10 +28,10 @@ const Index = () => {
       {/* Eventos especiales: cumpleaños, turnos exclusivos, team building */}
       <section id="eventos-especiales">
         <BirthdaySection />
-        <HazardDivider />
         <ExclusiveSection />
         <SmokeDivider />
         <TeamBuildingSection />
+        <HazardDivider />
       </section>
 
       {/* Reservar + cómo funciona */}

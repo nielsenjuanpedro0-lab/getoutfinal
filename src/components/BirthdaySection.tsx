@@ -58,7 +58,7 @@ export default function BirthdaySection() {
 
             <div className="text-center">
               <a
-                href="https://wa.me/5492262000000?text=Hola!%20Quiero%20consultar%20por%20un%20cumplea%C3%B1os"
+                href="https://wa.me/5492262314212?text=Hola!%20Quiero%20consultar%20por%20un%20cumplea%C3%B1os"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-3 bg-primary text-primary-foreground font-bold text-lg px-10 py-4 rounded-xl hover:brightness-110 active:scale-[0.97] transition-all duration-200 shadow-lg shadow-primary/25"

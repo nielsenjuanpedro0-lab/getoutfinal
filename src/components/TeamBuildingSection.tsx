@@ -38,7 +38,7 @@ export default function TeamBuildingSection() {
             </p>
 
             <a
-              href="https://wa.me/5492262000000?text=Hola!%20Represento%20a%20una%20empresa%20y%20quiero%20consultar%20por%20sus%20eventos%20de%20Team%20Building."
+              href="https://wa.me/5492262314212?text=Hola!%20Represento%20a%20una%20empresa%20y%20quiero%20consultar%20por%20sus%20eventos%20de%20Team%20Building."
               target="_blank"
               rel="noopener noreferrer"
               className="group relative inline-flex items-center justify-center gap-3 bg-gradient-to-r from-orange-600 to-amber-600 text-white font-bold text-lg px-8 py-5 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-[0_10px_40px_-10px_rgba(249,115,22,0.8)] active:scale-95 w-full sm:w-auto overflow-hidden"

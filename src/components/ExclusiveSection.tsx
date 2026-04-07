@@ -32,8 +32,8 @@ export default function ExclusiveSection() {
             
             <p className="mt-6 md:mt-8 text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-md mx-auto lg:mx-0 font-light">
               Durante la semana tenemos turnos exclusivos para tu grupo.{" "}
-              <span className="text-white font-medium">Para grupos a partir de 4 personas.</span>{" "}
-              Consultá disponibilidad y armá tu experiencia completamente a medida.
+              Consultá disponibilidad y armá tu experiencia completamente a medida.{" "}
+              <span className="text-white font-medium">Para grupos a partir de 4 personas.</span>
             </p>
           </div>
 
@@ -43,8 +43,8 @@ export default function ExclusiveSection() {
             {[
               { 
                 icon: Clock, 
-                title: "Horarios flexibles", 
-                desc: "Elegí el horario que mejor te quede, adaptamos la agenda a vos.",
+                title: "Reservas exclusivas", 
+                desc: "Abrimos turnos en horarios especiales para vos y tu equipo.",
                 accent: "text-primary", border: "border-primary/20", bg: "bg-primary/5 hover:bg-primary/10"
               },
               { 
@@ -74,7 +74,7 @@ export default function ExclusiveSection() {
 
             <div className="pt-6">
               <a
-                href="https://wa.me/5492262000000?text=Hola!%20Quiero%20consultar%20por%20un%20turno%20exclusivo"
+                href="https://wa.me/5492262314212?text=Hola!%20Quiero%20consultar%20por%20un%20turno%20exclusivo"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full relative overflow-hidden group/btn flex items-center justify-center gap-3 bg-accent text-accent-foreground font-bold text-lg px-8 py-5 rounded-xl transition-all duration-300 transform active:scale-[0.98] shadow-[0_0_30px_rgba(230,126,34,0.4)] hover:shadow-[0_0_50px_rgba(230,126,34,0.6)]"
