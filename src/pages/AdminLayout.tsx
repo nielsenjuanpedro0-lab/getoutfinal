@@ -69,7 +69,7 @@ export default function AdminLayout() {
       </aside>
 
       {/* Mobile header */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col min-w-0">
         <header className="md:hidden flex items-center justify-between p-4 border-b border-border bg-card">
           <div className="flex items-center gap-2">
             <img src={logo} alt="GetOut!" className="h-8 w-8 rounded-md" />

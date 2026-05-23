@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -22,6 +22,13 @@ export default function AdminBookings() {
   const [addOpen, setAddOpen] = useState(false);
   const [blockOpen, setBlockOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const { data: rooms } = useQuery({
     queryKey: ["admin-rooms"],
@@ -150,14 +157,15 @@ export default function AdminBookings() {
       </div>
 
       {viewMode === "calendar" ? (
-        <div className="bg-card border border-border rounded-xl p-4 shadow-sm min-h-[600px] text-foreground">
+        <div className="bg-card border border-border rounded-xl p-4 shadow-sm min-h-[600px] text-foreground overflow-hidden">
           <FullCalendar
+            key={isMobile ? 'mobile' : 'desktop'}
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
-            initialView="timeGridWeek"
+            initialView={isMobile ? "listWeek" : "timeGridWeek"}
             headerToolbar={{
               left: 'prev,next today',
               center: 'title',
-              right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+              right: isMobile ? 'listWeek,timeGridDay' : 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
             }}
             locale="es"
             events={calendarEvents}
@@ -186,7 +194,8 @@ export default function AdminBookings() {
           </div>
 
           <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
-            <div className="overflow-x-auto">
+            {/* Desktop Table */}
+            <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-sm">
                 <thead><tr className="border-b border-border bg-muted/30">
                   <th className="text-left p-4 text-muted-foreground font-medium">Cliente</th>
@@ -252,6 +261,64 @@ export default function AdminBookings() {
                   ))}
                 </tbody>
               </table>
+            </div>
+
+            {/* Mobile Cards */}
+            <div className="md:hidden flex flex-col gap-4 p-4 bg-muted/10">
+              {isLoading ? (
+                <div className="text-center p-4 text-muted-foreground">Cargando...</div>
+              ) : !displayedBookings?.length ? (
+                <div className="text-center p-4 text-muted-foreground">No hay reservas</div>
+              ) : (
+                displayedBookings.map((b: any) => (
+                  <div key={b.id} className="bg-card border border-border rounded-xl p-4 shadow-sm flex flex-col gap-3">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <div className="font-bold text-base text-foreground">{b.customer_name}</div>
+                        <div className="text-xs text-muted-foreground">{b.customer_phone}</div>
+                      </div>
+                      <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
+                          b.status === "completed" ? "bg-blue-500/10 text-blue-500" :
+                          b.status === "paid" ? "bg-emerald-500/10 text-emerald-500" :
+                          b.status === "confirmed" ? "bg-green-500/10 text-green-500" :
+                          b.status === "cancelled" ? "bg-red-500/10 text-red-500" :
+                          "bg-yellow-500/10 text-yellow-500"
+                      }`}>
+                          {b.status === "pending" ? "Pendiente" : 
+                           b.status === "confirmed" ? "Confirmada" : 
+                           b.status === "paid" ? "Pagada" : 
+                           b.status === "cancelled" ? "Cancelada" : "Completada"}
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
+                      <div><strong className="text-foreground">Sala:</strong> {b.rooms?.name}</div>
+                      <div><strong className="text-foreground">Jugadores:</strong> {b.num_players}</div>
+                      <div><strong className="text-foreground">Fecha:</strong> {b.booking_date}</div>
+                      <div><strong className="text-foreground">Hora:</strong> {b.booking_time}</div>
+                    </div>
+                    <div className="flex gap-2 pt-3 border-t border-border/50 justify-end">
+                        {(b.status === "pending" || b.status === "cancelled") && (
+                          <Button variant="outline" size="sm" className="text-green-500" onClick={() => updateStatus.mutate({ id: b.id, status: "confirmed" })}>
+                            <Check size={16} className="mr-1"/> Confirmar
+                          </Button>
+                        )}
+                        {(b.status === "confirmed") && (
+                          <Button variant="outline" size="sm" className="text-emerald-500" onClick={() => updateStatus.mutate({ id: b.id, status: "paid" })}>
+                            <DollarSign size={16} className="mr-1"/> Pagada
+                          </Button>
+                        )}
+                        {b.status !== "cancelled" && (
+                          <Button variant="outline" size="sm" className="text-orange-500" onClick={() => updateStatus.mutate({ id: b.id, status: "cancelled" })}>
+                            <X size={16} className="mr-1"/> Cancelar
+                          </Button>
+                        )}
+                        <Button variant="outline" size="sm" className="text-destructive" onClick={() => { if(window.confirm('¿Eliminar reserva?')) deleteBooking.mutate(b.id)}}>
+                          <Trash2 size={16} />
+                        </Button>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </>

@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
@@ -24,8 +25,19 @@ const Index = () => {
   useEffect(() => {
     const status = searchParams.get("status");
     if (status === "success") {
-      toast.success("¡Pago acreditado! Tu reserva está confirmada.", {
-        description: "Te enviaremos un WhatsApp con los detalles.",
+      const bookingId = searchParams.get("external_reference");
+      if (bookingId) {
+        supabase
+          .from("bookings")
+          .update({ status: "confirmed", payment_status: "paid" })
+          .eq("id", bookingId)
+          .then(({ error }) => {
+            if (error) console.error("Error auto-confirming booking:", error);
+          });
+      }
+
+      toast.success("¡Tu reserva fue confirmada!", {
+        description: "Recordá llegar 15 minutos antes para hacer el ingreso al juego. ¡Te esperamos!",
         duration: 8000,
       });
       // Limpiar el parámetro de la URL
