@@ -38,9 +38,17 @@ export default function AdminDashboard() {
     return acc;
   }, 0) || 0;
 
-  // Tasa de ocupacion simplificada para hoy: (reservas de hoy / (salas activas * supuestos 5 turnos por sala)) * 100
-  const activeRoomsCount = rooms?.filter(r => r.is_active)?.length || 1; // evitar division por 0
-  const totalSlotsToday = activeRoomsCount * 5; // Asumimos 5 turnos promedio por sala
+  const { data: businessConfig } = useQuery({
+    queryKey: ["business-config-slots"],
+    queryFn: async () => {
+      const { data } = await (supabase as any).from("business_config").select("key, value").in("key", ["total_daily_slots"]);
+      const config: Record<string, any> = {};
+      data?.forEach((row: any) => { config[row.key] = row.value; });
+      return config;
+    },
+  });
+
+  const totalSlotsToday: number = businessConfig?.total_daily_slots ?? 12;
   const occupancyRate = ((todayBookings / totalSlotsToday) * 100).toFixed(1);
 
   const stats = [

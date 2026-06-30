@@ -127,33 +127,44 @@ function RoomModal({ room, onClose }: { room: any; onClose: () => void }) {
 
 // ─── Pricing Table ───────────────────────────────────────────────────────────────
 
+const DEFAULT_TIERS = [
+  { id: "d1", label: "2 a 3 jugadores", price: 25000, highlight: false },
+  { id: "d2", label: "4 a 6 jugadores", price: 23000, highlight: true },
+  { id: "d3", label: "7 a 10 jugadores", price: 21000, highlight: false },
+];
+
 function PricingTable() {
-  const tiers = [
-    { range: "2 a 3 jugadores", price: "$25.000", per: "por persona" },
-    { range: "4 a 6 jugadores", price: "$23.000", per: "por persona", highlight: true },
-    { range: "7 a 10 jugadores", price: "$21.000", per: "por persona" },
-  ];
+  const { data: dbTiers } = useQuery({
+    queryKey: ["public-pricing-tiers"],
+    queryFn: async () => {
+      const { data } = await (supabase as any).from("pricing_tiers").select("*").order("sort_order");
+      return data && data.length > 0 ? data : null;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const tiers = dbTiers || DEFAULT_TIERS;
+
   return (
     <div className="reveal mt-20 rounded-2xl border border-primary/20 bg-card/60 backdrop-blur-sm p-8 md:p-12">
       <h3 className="font-display text-4xl md:text-5xl text-center text-foreground mb-2">Precios</h3>
       <p className="text-center text-muted-foreground mb-10 text-sm">El precio varía según la cantidad de jugadores</p>
       <div className="grid md:grid-cols-3 gap-4 mb-10">
-        {tiers.map((t) => (
+        {tiers.map((t: any) => (
           <div
-            key={t.range}
+            key={t.id}
             className={`text-center p-6 rounded-xl border transition-all duration-300 ${
               t.highlight
                 ? "bg-primary/15 border-primary/50 scale-105 shadow-[0_0_30px_rgba(230,126,34,0.15)]"
                 : "bg-white/5 border-white/10"
             }`}
           >
-            <p className="text-sm text-muted-foreground mb-2">{t.range}</p>
-            <p className="font-display text-4xl md:text-5xl text-primary">{t.price}</p>
-            <p className="text-xs text-muted-foreground mt-1">{t.per}</p>
+            <p className="text-sm text-muted-foreground mb-2">{t.label}</p>
+            <p className="font-display text-4xl md:text-5xl text-primary">${t.price.toLocaleString()}</p>
+            <p className="text-xs text-muted-foreground mt-1">por persona</p>
           </div>
         ))}
       </div>
-      {/* Aclaraciones */}
       <div className="border-t border-white/10 pt-6 space-y-3 text-sm text-muted-foreground text-center">
         <p>🧒 De 6 a 9 años deben ingresar acompañados por al menos un adulto</p>
         <p>👶 Hasta los 5 años ingresan sin costo presentando DNI, pero no cuentan para la cantidad de jugadores</p>

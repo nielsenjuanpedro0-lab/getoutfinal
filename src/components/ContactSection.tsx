@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { MapPin, Loader2, CheckCircle, ChevronLeft, ChevronRight, CalendarDays, MessageCircle, ArrowRight, ShieldCheck, Wallet } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -37,6 +37,8 @@ export default function ContactSection() {
   const [roomSlots, setRoomSlots] = useState<string[]>([]);
   const [availableSlots, setAvailableSlots] = useState<string[]>([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
+  const [takenSlots, setTakenSlots] = useState<Set<string>>(new Set());
+  const [dayFullyBlocked, setDayFullyBlocked] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({ nombre: "", whatsapp: "", email: "" });
 
@@ -82,23 +84,63 @@ export default function ContactSection() {
     const fetchAvailability = async () => {
       setLoadingSlots(true);
       const dateStr = format(selectedDate, "yyyy-MM-dd");
-      const [bookingsRes, blockedRes] = await Promise.all([
+      const [bookingsRes, blockedRes, globalBlockedRes] = await Promise.all([
         supabase.from("bookings").select("booking_time").eq("room_id", selectedRoom).eq("booking_date", dateStr).neq("status", "cancelled"),
-        supabase.from("blocked_slots").select("blocked_time").eq("room_id", selectedRoom).eq("blocked_date", dateStr),
+        (supabase as any).from("blocked_slots").select("blocked_time").eq("room_id", selectedRoom).eq("blocked_date", dateStr),
+        (supabase as any).from("blocked_slots").select("blocked_time").is("room_id", null).eq("blocked_date", dateStr),
       ]);
       const taken = new Set<string>();
-      bookingsRes.data?.forEach((b) => taken.add(b.booking_time.slice(0, 5)));
-      blockedRes.data?.forEach((b) => taken.add(b.blocked_time.slice(0, 5)));
-      setAvailableSlots(roomSlots.filter((t) => !taken.has(t)));
+      bookingsRes.data?.forEach((b: any) => taken.add(b.booking_time.slice(0, 5)));
+      blockedRes.data?.forEach((b: any) => { if (b.blocked_time) taken.add(b.blocked_time.slice(0, 5)); });
+      globalBlockedRes.data?.forEach((b: any) => { if (b.blocked_time) taken.add(b.blocked_time.slice(0, 5)); });
+      const isFullDayBlocked = !!globalBlockedRes.data?.some((b: any) => !b.blocked_time);
+      setDayFullyBlocked(isFullDayBlocked);
+      setTakenSlots(isFullDayBlocked ? new Set(roomSlots) : taken);
+      setAvailableSlots(roomSlots);
       setLoadingSlots(false);
     };
     fetchAvailability();
   }, [selectedRoom, selectedDate, roomSlots]);
 
+  const [blockedDays, setBlockedDays] = useState<Set<string>>(new Set());
+  const [openDays, setOpenDays] = useState<number[]>([0, 6]); // fallback: sat+sun
+
+  useEffect(() => {
+    // Load open days config
+    (supabase as any)
+      .from("business_config")
+      .select("value")
+      .eq("key", "open_days")
+      .single()
+      .then(({ data }: any) => {
+        if (data?.value && Array.isArray(data.value)) setOpenDays(data.value);
+      });
+  }, []);
+
+  useEffect(() => {
+    // Load all-room blocked days (feriados) — room_id IS NULL means all rooms blocked
+    (supabase as any)
+      .from("blocked_slots")
+      .select("blocked_date, blocked_time")
+      .is("room_id", null)
+      .then(({ data }: any) => {
+        if (!data) return;
+        const days = new Set<string>();
+        data.forEach((b: any) => {
+          // If no time specified (null or empty), the whole day is blocked
+          if (!b.blocked_time) days.add(b.blocked_date);
+        });
+        setBlockedDays(days);
+      });
+  }, []);
+
   const disableDate = (date: Date) => {
     if (isBefore(date, startOfDay(new Date()))) return true;
     const day = getDay(date);
-    return day !== 0 && day !== 6;
+    if (!openDays.includes(day)) return true;
+    const dateStr = format(date, "yyyy-MM-dd");
+    if (blockedDays.has(dateStr)) return true;
+    return false;
   };
 
   const createMPPreference = async (bookingId: string, roomName: string, price: number) => {
@@ -254,17 +296,32 @@ export default function ContactSection() {
                     <div className="flex-1 flex items-center justify-center"><Loader2 className="animate-spin text-zinc-600" /></div>
                   ) : (
                     <div className="grid grid-cols-2 gap-2.5">
-                      {availableSlots.length > 0 ? availableSlots.map(s => (
-                        <motion.button
-                          key={s}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={() => { setSelectedTime(s); setTimeout(() => setStep("details"), 200); }}
-                          className={`py-3.5 rounded-xl font-black text-lg transition-all ${selectedTime === s ? 'text-white shadow-lg' : 'bg-white/5 text-white/30'}`}
-                          style={selectedTime === s ? { backgroundColor: roomColor } : {}}
-                        >
-                          {s}
-                        </motion.button>
-                      )) : <p className="col-span-2 text-zinc-600 text-[10px] italic text-center mt-8">Sin turnos disponibles</p>}
+                      {roomSlots.length > 0 ? roomSlots.map(s => {
+                        const taken = takenSlots.has(s);
+                        const isSelected = selectedTime === s;
+                        return (
+                          <motion.button
+                            key={s}
+                            whileTap={taken ? {} : { scale: 0.95 }}
+                            disabled={taken}
+                            onClick={() => { if (!taken) { setSelectedTime(s); setTimeout(() => setStep("details"), 200); } }}
+                            className={`py-3.5 rounded-xl font-black text-lg transition-all relative ${
+                              taken
+                                ? 'bg-zinc-900/60 text-zinc-700 cursor-not-allowed border border-zinc-800'
+                                : isSelected
+                                  ? 'text-white shadow-lg'
+                                  : 'bg-white/5 text-orange-400 hover:bg-white/10 border border-orange-400/20'
+                            }`}
+                            style={isSelected && !taken ? { backgroundColor: roomColor } : {}}
+                          >
+                            {s}
+                            {taken && <span className="absolute inset-x-0 top-1/2 h-px bg-zinc-700/60" />}
+                          </motion.button>
+                        );
+                      }) : <p className="col-span-2 text-zinc-600 text-[10px] italic text-center mt-8">Sin turnos configurados</p>}
+                      {dayFullyBlocked && (
+                        <p className="col-span-2 text-red-500/70 text-[10px] font-bold italic text-center mt-2">Día cerrado — feriado o mantenimiento</p>
+                      )}
                     </div>
                   )}
                   {selectedTime && (
